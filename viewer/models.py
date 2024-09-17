@@ -44,10 +44,10 @@ class CatalogMain(Model):
     body = CharField(max_length=12, null=True, blank=True)
 
     def __repr__(self):
-        return f"CatalogMain(name={self.name})"
+        return f"CatalogMain(brand_name={self.brand_name})"
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.brand_name}"
 
 
 class Accessories(Model):
