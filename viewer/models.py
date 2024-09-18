@@ -35,11 +35,11 @@ class ModelName(Model):
 
 
 class CatalogMain(Model):
-    brand_name = ForeignKey(Brand, null=False, blank=False, unique=True)
-    model_name = ForeignKey(ModelName, null=False, blank=False, unique=True)
+    brand_name = ForeignKey(Brand, null=True, blank=False, unique=False, on_delete=SET_NULL)
+    model_name = ManyToManyField(ModelName, blank=False, unique=False, related_name='brand_name')
     year_of_manufacture = DateField(null=False, blank=False)
-    color_of_mat = ForeignKey(Color, null=False, blank=False)
-    color_of_trim = ForeignKey(Color, null=False, blank=False)
+    color_of_mat = ForeignKey(Color, null=True, blank=False, on_delete=SET_NULL, related_name='mats_color')
+    color_of_trim = ForeignKey(Color, null=True, blank=False, on_delete=SET_NULL, related_name='trims_color')
     code_product = DateField(null=True, blank=True)
     body = CharField(max_length=12, null=True, blank=True)
 
