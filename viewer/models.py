@@ -8,7 +8,7 @@ class ColorOfTrim(Model):
     name = CharField(max_length=20, null=False, blank=False, unique=True)
 
     def __repr__(self):
-        return f"Color(name={self.name})"
+        return f"ColorOfTrim(name={self.name})"
 
     def __str__(self):
         return f"{self.name}"
@@ -18,7 +18,7 @@ class ColorOfMat(Model):
     name = CharField(max_length=20, null=False, blank=False, unique=True)
 
     def __repr__(self):
-        return f"Color(name={self.name})"
+        return f"ColorOfMat(name={self.name})"
 
     def __str__(self):
         return f"{self.name}"
@@ -45,7 +45,8 @@ class Brand(Model):
         return f"{self.name}"
 
 
-class CatalogMain(Model):
+class CarMat(Model):
+    name = CharField(max_length=20, null=False, blank=False)
     brand_name = ForeignKey(Brand, null=True, blank=False, unique=False, on_delete=SET_NULL)
     model_name = ForeignKey(ModelName, null=True, blank=False, on_delete=CASCADE)
     year_of_manufacture = DateField(null=False, blank=False)
@@ -54,16 +55,20 @@ class CatalogMain(Model):
     color_of_trim = ForeignKey(ColorOfTrim, null=True, blank=False, on_delete=SET_NULL, related_name='trims_color')
     code_product = DateField(null=True, blank=True)
 
-
     def __repr__(self):
-        return f"CatalogMain(brand_name={self.brand_name})"
+        return (f"CarMat(name={self.name} brand_name={self.brand_name} model_name={self.model_name} "
+                f"year_of_manufacture={self.year_of_manufacture} body={self.body})")
 
     def __str__(self):
-        return f"{self.brand_name}"
+        return f"{self.name}"
 
 
 class Accessories(Model):
     name = CharField(max_length=20, null=False, blank=False)
+    brand_name = ForeignKey(Brand, null=True, blank=False, unique=False, on_delete=SET_NULL)
+    model_name = ForeignKey(ModelName, null=True, blank=False, on_delete=CASCADE)
+    year_of_manufacture = DateField(null=False, blank=False)
+    code = DateField(null=True, blank=True)
 
     def __repr__(self):
         return f"Accessories(name={self.name})"
@@ -71,5 +76,10 @@ class Accessories(Model):
     def __str__(self):
         return f"{self.name}"
 
+
+class CategoryMain(Model):
+    name = CharField(max_length=20, null=False, blank=False, unique=True)
+    name_car_mat = ForeignKey(CarMat, null=True, blank=False, on_delete=CASCADE)
+    name_accessories = ForeignKey(Accessories, null=True, blank=False, on_delete=CASCADE)
 
 
