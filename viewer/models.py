@@ -53,8 +53,12 @@ class CarMat(Model):
     body = CharField(max_length=12, null=True, blank=True)
     color_of_mat = ForeignKey(ColorOfMat, null=True, blank=False, on_delete=SET_NULL, related_name='mats_color')
     color_of_trim = ForeignKey(ColorOfTrim, null=True, blank=False, on_delete=SET_NULL, related_name='trims_color')
-    code_product = DateField(null=True, blank=True)
-    price = FloatField(null=False, blank=False)
+    code = DateField(null=True, blank=True)
+    short_description = TextField()
+    description = TextField()
+    price = IntegerField(null=False, blank=False)
+    availability = BooleanField(default=False)
+    img = ImageField(default='no_image.png', upload_to='images')
 
     def __repr__(self):
         return (f"CarMat(name={self.name} brand_name={self.brand_name} model_name={self.model_name} "
@@ -70,7 +74,11 @@ class Accessories(Model):
     model_name = ForeignKey(ModelName, null=True, blank=False, on_delete=CASCADE)
     year_of_manufacture = DateField(null=False, blank=False)
     code = DateField(null=True, blank=True)
-    price = FloatField(null=False, blank=False)
+    short_description = TextField()
+    description = TextField()
+    price = IntegerField(null=False, blank=False)
+    availability = BooleanField(default=False)
+    img = ImageField(default='no_image.png', upload_to='images')
 
     def __repr__(self):
         return f"Accessories(name={self.name})"
