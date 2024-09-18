@@ -54,6 +54,7 @@ class CarMat(Model):
     color_of_mat = ForeignKey(ColorOfMat, null=True, blank=False, on_delete=SET_NULL, related_name='mats_color')
     color_of_trim = ForeignKey(ColorOfTrim, null=True, blank=False, on_delete=SET_NULL, related_name='trims_color')
     code_product = DateField(null=True, blank=True)
+    price = FloatField(null=False, blank=False)
 
     def __repr__(self):
         return (f"CarMat(name={self.name} brand_name={self.brand_name} model_name={self.model_name} "
@@ -69,6 +70,7 @@ class Accessories(Model):
     model_name = ForeignKey(ModelName, null=True, blank=False, on_delete=CASCADE)
     year_of_manufacture = DateField(null=False, blank=False)
     code = DateField(null=True, blank=True)
+    price = FloatField(null=False, blank=False)
 
     def __repr__(self):
         return f"Accessories(name={self.name})"
