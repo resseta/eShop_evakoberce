@@ -46,7 +46,7 @@ class ModelName(Model):
 
 
 class CarMat(Model):
-    name = CharField(max_length=20, null=False, blank=False)
+    name = CharField(max_length=60, null=False, blank=False)
     model_name = ForeignKey(ModelName, null=True, blank=False, on_delete=CASCADE)
     year_of_manufacture = DateField(null=False, blank=False)
     body = CharField(max_length=12, null=True, blank=True)
@@ -69,7 +69,7 @@ class CarMat(Model):
 
 
 class Accessories(Model):
-    name = CharField(max_length=20, null=False, blank=False)
+    name = CharField(max_length=50, null=False, blank=False)
     model_name = ForeignKey(ModelName, null=True, blank=False, on_delete=CASCADE)
     year_of_manufacture = DateField(null=False, blank=False)
     code = DateField(null=True, blank=True)
@@ -93,3 +93,11 @@ class CategoryMain(Model):
     name_accessories = ForeignKey(Accessories, null=True, blank=False, on_delete=CASCADE)
 
 
+class Body(Model):
+    name = CharField(max_length=20, null=False, blank=False, unique=True)
+
+    def __repr__(self):
+        return f"Body(name={self.name})"
+
+    def __str__(self):
+        return f"{self.name}"
