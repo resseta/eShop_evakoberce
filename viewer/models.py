@@ -48,11 +48,11 @@ class ModelName(Model):
 class CarMat(Model):
     name = CharField(max_length=60, null=False, blank=False)
     model_name = ForeignKey(ModelName, null=True, blank=False, on_delete=CASCADE)
-    year_of_manufacture = DateField(null=False, blank=False)
+    year_of_manufacture = CharField(max_length=20, null=False, blank=False)
     body = CharField(max_length=12, null=True, blank=True)
     color_of_mat = ForeignKey(ColorOfMat, null=True, blank=False, on_delete=SET_NULL) # , related_name='mats_color'   - nevim, jestli tento parametr potrebujeme
     color_of_trim = ForeignKey(ColorOfTrim, null=True, blank=False, on_delete=SET_NULL) # , related_name='trims_color'
-    code = DateField(null=True, blank=True)
+    code = CharField(max_length=20, null=True, blank=True)
     short_description = TextField()
     description = TextField()
     quantity = IntegerField()
@@ -71,8 +71,8 @@ class CarMat(Model):
 class Accessories(Model):
     name = CharField(max_length=50, null=False, blank=False)
     model_name = ForeignKey(ModelName, null=True, blank=False, on_delete=CASCADE)
-    year_of_manufacture = DateField(null=False, blank=False)
-    code = DateField(null=True, blank=True)
+    year_of_manufacture = CharField(max_length=20, null=False, blank=False)
+    code = CharField(max_length=20, null=True, blank=True)
     short_description = TextField()
     description = TextField()
     quantity = IntegerField()
