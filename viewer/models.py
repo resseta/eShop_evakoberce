@@ -23,20 +23,8 @@ class ColorOfMat(Model):
     def __str__(self):
         return f"{self.name}"
 
-
-class ModelName(Model):
-    name = CharField(max_length=20, null=False, blank=False, unique=True)
-
-    def __repr__(self):
-        return f"ModelName(name={self.name})"
-
-    def __str__(self):
-        return f"{self.name}"
-
-
 class Brand(Model):
     name = CharField(max_length=20, null=False, blank=False, unique=True)
-    model_name = ForeignKey(ModelName, null=False, blank=False, on_delete=CASCADE)
 
     def __repr__(self):
         return f"Brand(name={self.name})"
@@ -45,9 +33,19 @@ class Brand(Model):
         return f"{self.name}"
 
 
+class ModelName(Model):
+    name = CharField(max_length=20, null=False, blank=False, unique=True)
+    brand_name = ForeignKey(Brand, null=True, blank=False, unique=False, on_delete=SET_NULL)
+
+    def __repr__(self):
+        return f"ModelName(name={self.name})"
+
+    def __str__(self):
+        return f"{self.name}"
+
+
 class CarMat(Model):
     name = CharField(max_length=20, null=False, blank=False)
-    brand_name = ForeignKey(Brand, null=True, blank=False, unique=False, on_delete=SET_NULL)
     model_name = ForeignKey(ModelName, null=True, blank=False, on_delete=CASCADE)
     year_of_manufacture = DateField(null=False, blank=False)
     body = CharField(max_length=12, null=True, blank=True)
@@ -56,7 +54,8 @@ class CarMat(Model):
     code = DateField(null=True, blank=True)
     short_description = TextField()
     description = TextField()
-    price = IntegerField(verbose_name='Cena', null=False, blank=False)
+    quantity = IntegerField()
+    price = FloatField(verbose_name='Cena', null=False, blank=False)
     availability = BooleanField(default=False)
     img = ImageField(default='no_image.png', upload_to='images')
 
@@ -70,13 +69,13 @@ class CarMat(Model):
 
 class Accessories(Model):
     name = CharField(max_length=20, null=False, blank=False)
-    brand_name = ForeignKey(Brand, null=True, blank=False, unique=False, on_delete=SET_NULL)
     model_name = ForeignKey(ModelName, null=True, blank=False, on_delete=CASCADE)
     year_of_manufacture = DateField(null=False, blank=False)
     code = DateField(null=True, blank=True)
     short_description = TextField()
     description = TextField()
-    price = IntegerField(null=False, blank=False)
+    quantity = IntegerField()
+    price = FloatField(verbose_name='Cena', null=False, blank=False)
     availability = BooleanField(default=False)
     img = ImageField(default='no_image.png', upload_to='images')
 
