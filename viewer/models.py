@@ -35,7 +35,7 @@ class Brand(Model):
 
 
 class ModelName(Model):
-    name = CharField(max_length=20, null=False, blank=False, unique=True)
+    name = CharField(max_length=50, null=False, blank=False, unique=True)
     brand_name = ForeignKey(Brand, null=True, blank=False, unique=False, on_delete=SET_NULL)
 
     def __repr__(self):
