@@ -100,4 +100,3 @@ class CategoryMain(Model):
     name = CharField(max_length=20, null=False, blank=False, unique=True)
     name_car_mat = ForeignKey(CarMat, null=True, blank=False, on_delete=CASCADE)
     name_accessories = ForeignKey(Accessories, null=True, blank=False, on_delete=CASCADE)
-
