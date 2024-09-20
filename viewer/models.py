@@ -44,12 +44,21 @@ class ModelName(Model):
     def __str__(self):
         return f"{self.name}"
 
+class Body(Model):
+    name = CharField(max_length=20, null=False, blank=False, unique=True)
+
+    def __repr__(self):
+        return f"Body(name={self.name})"
+
+    def __str__(self):
+        return f"{self.name}"
+
 
 class CarMat(Model):
     name = CharField(max_length=60, null=False, blank=False)
     model_name = ForeignKey(ModelName, null=True, blank=False, on_delete=CASCADE)
     year_of_manufacture = CharField(max_length=20, null=False, blank=False)
-    body = CharField(max_length=12, null=True, blank=True)
+    body = ForeignKey(Body,  null=True, blank=False, on_delete=SET_NULL)
     color_of_mat = ForeignKey(ColorOfMat, null=True, blank=False, on_delete=SET_NULL) # , related_name='mats_color'   - nevim, jestli tento parametr potrebujeme
     color_of_trim = ForeignKey(ColorOfTrim, null=True, blank=False, on_delete=SET_NULL) # , related_name='trims_color'
     code = CharField(max_length=20, null=True, blank=True)
@@ -92,12 +101,3 @@ class CategoryMain(Model):
     name_car_mat = ForeignKey(CarMat, null=True, blank=False, on_delete=CASCADE)
     name_accessories = ForeignKey(Accessories, null=True, blank=False, on_delete=CASCADE)
 
-
-class Body(Model):
-    name = CharField(max_length=20, null=False, blank=False, unique=True)
-
-    def __repr__(self):
-        return f"Body(name={self.name})"
-
-    def __str__(self):
-        return f"{self.name}"
