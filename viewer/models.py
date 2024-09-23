@@ -59,8 +59,6 @@ class CarMat(Model):
     model_name = ForeignKey(ModelName, null=True, blank=False, on_delete=CASCADE)
     year_of_manufacture = CharField(max_length=20, null=False, blank=False)
     body = ForeignKey(Body, null=True, blank=True, on_delete=CASCADE)
-    color_of_mat = ForeignKey(ColorOfMat, null=True, blank=False, on_delete=SET_NULL) # , related_name='mats_color'   - nevim, jestli tento parametr potrebujeme
-    color_of_trim = ForeignKey(ColorOfTrim, null=True, blank=False, on_delete=SET_NULL) # , related_name='trims_color'
     code = CharField(max_length=20, null=True, blank=True)
     short_description = TextField()
     description = TextField()

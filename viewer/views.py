@@ -7,7 +7,8 @@ from viewer.models import CarMat
 
 # Create your views here.
 
-def home(request, *args, **kwargs):
+
+def home(request):
     return render(request, "home.html")
     # return HttpResponse('<ul>'
     #                     '<li>Autokoberce</li>'
