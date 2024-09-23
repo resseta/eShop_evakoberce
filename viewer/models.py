@@ -44,6 +44,7 @@ class ModelName(Model):
     def __str__(self):
         return f"{self.name}"
 
+
 class Body(Model):
     name = CharField(max_length=20, null=True, blank=True, unique=True)
 
