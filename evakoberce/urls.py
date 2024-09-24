@@ -19,7 +19,7 @@ from django.urls import path, include
 from django.views.generic.base import RedirectView
 
 from viewer import views
-from viewer.views import home, CarMatsListView, AccessoriesListView, carmat, accessories
+from viewer.views import home, CarMatsListView, AccessoriesListView, carmat, accessories, BrandsListView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,7 +31,9 @@ urlpatterns = [
     path('carmat/<pk>/', carmat, name='carmat'),
 
     path('accessories/', AccessoriesListView.as_view(), name="accessories"),
-    path('accessories/<pk>/', accessories, name='accesories')
+    path('accessories/<pk>/', accessories, name='accesories'),
+
+    path('brands/', BrandsListView.as_view(), name="brands"),
     # path('', RedirectView.as_view(url='/home/'))
 ]
 

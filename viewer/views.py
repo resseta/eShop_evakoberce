@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.views.generic import ListView
+from graphviz.backend import View
 
 from viewer.models import CarMat, Brand, Accessories
 
@@ -20,6 +21,7 @@ class CarMatsListView(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         brands = Brand.objects.all
+        context['brands'] = brands
         context['carmats'] = carmat
         context['accessories'] = accessories
         return context
@@ -34,7 +36,7 @@ def carmat(request, pk):
 
 
 class AccessoriesListView(ListView):
-    template_name = ("accessories.html")
+    template_name = "accessories.html"
     model = Accessories
     context_object_name = 'accessories'
 
@@ -45,6 +47,13 @@ def accessories(request, pk):
         context = {'accessories': accessories_}
         return render(request, "accessories.html", context)
     return redirect('accessories')
+
+
+class BrandsListView(ListView):
+    template_name = "brands.html"
+    model = Brand
+    context_object_name = 'brands'
+
 
 
 
