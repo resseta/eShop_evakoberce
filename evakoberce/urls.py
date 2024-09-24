@@ -19,13 +19,19 @@ from django.urls import path, include
 from django.views.generic.base import RedirectView
 
 from viewer import views
-from viewer.views import home
+from viewer.views import home, CarMatsListView, AccessoriesListView, carmat, accessories
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     # path('', home, name='home'),
     path('', home, name="home"),
+
+    path('carmats/', CarMatsListView.as_view(), name="carmats"),
+    path('carmat/<pk>/', carmat, name='carmat'),
+
+    path('accessories/', AccessoriesListView.as_view(), name="accessories"),
+    path('accessories/<pk>/', accessories, name='accesories')
     # path('', RedirectView.as_view(url='/home/'))
 ]
 
