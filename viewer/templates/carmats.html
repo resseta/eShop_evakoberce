@@ -1,15 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Vyberte svou značku a model</h1>
-    <ul>
-        {% for brand in brands %}
-            <li><a href="{% url 'brand' brand.id %}">{{ brand }}</a></li>
-        {% endfor %}
-    </ul>
+<div class="brand-main">
+    <h1>Vyberte svou značku a model</h1>
+    </br>
+        <ul>
+            {% for brand in brands %}
+                <a class="btn btn-outline-primary" href="#" role="button"  style="width: 180px;">
+                    {{ brand }}
+                </a>
+                <a class="line-space"> &nbsp;</a>
+            {% endfor %}
+        </ul>
+</div>
 {% endblock %}
-
-
-
-
-

@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView
 from graphviz.backend import View
 
-from viewer.models import CarMat, Brand, Accessories
+from viewer.models import CarMat, Brand, Accessories, ModelName
 
 
 # Create your views here.
@@ -53,6 +53,11 @@ class BrandsListView(ListView):
     template_name = "brands.html"
     model = Brand
     context_object_name = 'brands'
+
+class ModelsListView(ListView):
+    template_name = "models.html"
+    model = ModelName
+    context_object_name = 'models'
 
 
 

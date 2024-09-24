@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Vyberte svůj model auta</h2>
+    {% for model in models %}
+        {{ model }}
+    {% endfor %}
+{% endblock %}
