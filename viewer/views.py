@@ -54,11 +54,18 @@ class BrandsListView(ListView):
     model = Brand
     context_object_name = 'brands'
 
+
 class ModelsListView(ListView):
     template_name = "models.html"
     model = ModelName
     context_object_name = 'models'
 
 
+def model(request, pk):
+    if model.objects.filter(id=pk).exists():
+        model_ = ModelName.objects.get(id=pk)
+        context = {'model': model_}
+        return render(request, "models.html", context)
+    return redirect('models')
 
 

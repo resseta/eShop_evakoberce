@@ -2,7 +2,9 @@
 
 {% block content %}
 <h2>Vyberte svůj model auta</h2>
-    {% for model in models %}
-        {{ model }}
-    {% endfor %}
+    <ul>
+        {% for model in models %}
+            <li><a href="{% url 'model' model.id %}">{{ model }}</a></li>
+        {% endfor %}
+    </ul>
 {% endblock %}
