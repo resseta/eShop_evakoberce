@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ accessories.name }}</h1>
+<div class="accessories-details">
+    <div class="accessories-model_name">
+        <strong>Model auta:</strong>
+    </div>
+
+    <div class="accessories-short_description">
+        <strong>Popis:</strong> {{ accessories.description }}
+    </div>
+
+    <div class="accessories-quantity">
+        <strong>Množství:</strong> {{ accessories.quantity }}
+    </div>
+
+    <div class="accessories-price">
+        <strong>Cena:</strong> {{ accessories.price }}
+    </div>
+
+</div>
+{% endblock %}

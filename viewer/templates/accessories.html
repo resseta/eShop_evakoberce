@@ -2,4 +2,9 @@
 
 {% block content %}
 <h1>Doplňky</h1>
+    <ul>
+        {% for accessorie in accessories %}
+            <a href="{% url 'accessorie' accessories.id %}" class="btn btn-outline-danger"  role="button" style="width: 150px;" >{{ model }}</a>
+        {% endfor %}
+    </ul>
 {% endblock %}
