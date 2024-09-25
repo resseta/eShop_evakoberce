@@ -31,7 +31,7 @@ def carmat(request, pk):
     if CarMat.objects.filter(id=pk).exists():
         carmat_ = CarMat.objects.get(id=pk)
         context = {'carmat': carmat_}
-        return render(request, "carmats.html", context)
+        return render(request, "carmat.html", context)
     return redirect('carmats')
 
 
@@ -62,7 +62,7 @@ class ModelsListView(ListView):
 
 
 def model(request, pk):
-    if model.objects.filter(id=pk).exists():
+    if ModelName.objects.filter(id=pk).exists():
         model_ = ModelName.objects.get(id=pk)
         context = {'model': model_}
         return render(request, "models.html", context)
