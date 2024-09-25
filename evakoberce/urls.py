@@ -28,6 +28,7 @@ urlpatterns = [
     path('', home, name="home"),
 
     path('carmats/', CarMatsListView.as_view(), name="carmats"),
+    # path('carmats/brands', CarMatsListView.as_view(), name="brands"),
     path('carmat/<pk>/', carmat, name='carmat'),
 
     path('accessories/', AccessoriesListView.as_view(), name="accessories"),
