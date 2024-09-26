@@ -13,29 +13,19 @@ def home(request):
     return render(request, "home.html")
 
 
-class CarMatsListView(ListView):
-    template_name = "carmats.html"
-    model = CarMat
-    context_object_name = 'carmats'
-
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        brands = Brand.objects.all
-        context['brands'] = brands
-        context['accessories'] = accessories
-        context['carmats'] = CarMat.objects.all()
-        return context
-
-
-def carmat(request, pk):
-    if Brand.objects.filter(id=pk).exists():
-        brand = Brand.objects.get(id=pk)
-        context = {'brand': brand}
-        request.session['brand'] = brand.id
-        return redirect('models')
-        # return render(request, "carmat.html", context)
-    return redirect('carmats')
+# class CarMatsListView(ListView):
+#     template_name = "carmats.html"
+#     model = CarMat
+#     context_object_name = 'carmats'
+#
+#
+#     def get_context_data(self, *, object_list=None, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         brands = Brand.objects.all
+#         context['brands'] = brands
+#         context['accessories'] = accessories
+#         context['carmats'] = CarMat.objects.all()
+#         return context
 
 
 class AccessoriesListView(ListView):
@@ -65,12 +55,12 @@ class BrandsListView(ListView):
         context['accessories'] = accessories
         return context
 
-
 def brand(request, pk):
     if Brand.objects.filter(id=pk).exists():
-        brand_ = Brand.objects.get(id=pk)
-        context = {'brand': brand_}
-        return render(request, "brands.html", context)
+        brand = Brand.objects.get(id=pk)
+        context = {'brand': brand}
+        request.session['brand'] = brand.id
+        return redirect('models')
     return redirect('brands')
 
 
@@ -90,6 +80,27 @@ def model(request, pk):
     if ModelName.objects.filter(id=pk).exists():
         model_ = ModelName.objects.get(id=pk)
         context = {'model': model_}
-        return render(request, "models.html", context)
+        request.session['model'] = model_.id
+        return redirect("carmats")
     return redirect('models')
+
+
+class CarMatsListView(ListView):
+    template_name = "carmat.html"
+    model = CarMat
+    context_object_name = 'carmats'
+
+    def get_queryset(self):
+        model_id = self.request.session['model']
+        model = ModelName.objects.get(id=model_id)
+        carmats = CarMat.objects.filter(model_name=model)
+        return carmats
+
+
+def carmat(request, pk):
+    if CarMat.objects.filter(id=pk).exists():
+        carmat_ = CarMat.objects.get(id=pk)
+        context = {'carmat': carmat_}
+        return render(request, "carmats.html", context)
+    return redirect('carmats')
 

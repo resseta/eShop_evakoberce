@@ -19,8 +19,8 @@ from django.urls import path, include
 from django.views.generic.base import RedirectView
 
 from viewer import views
-from viewer.views import home, CarMatsListView, AccessoriesListView, carmat, accessories, BrandsListView, \
-    ModelsListView, model, brand
+from viewer.views import home, AccessoriesListView, accessories, BrandsListView, \
+    ModelsListView, model, brand, CarMatsListView, carmat
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,17 +28,20 @@ urlpatterns = [
     # path('', home, name='home'),
     path('', home, name="home"),
 
-    path('carmats/', CarMatsListView.as_view(), name="carmats"),
-    path('carmat/<pk>/', carmat, name='carmat'),
+    # path('carmats/', CarMatsListView.as_view(), name="carmats"),
+    # path('carmat/<pk>/', carmat, name='carmat'),
 
     path('accessories/', AccessoriesListView.as_view(), name="accessories"),
     path('accessories/<pk>/', accessories, name='accesories'),
 
-    path('carmats/brands/', BrandsListView.as_view(), name="brands"),
+    path('brands/', BrandsListView.as_view(), name="brands"),
     path('brand/<pk>/', brand, name='brand'),
 
-    path('carmats/brands/models/', ModelsListView.as_view(), name="models"),
+    path('brands/models/', ModelsListView.as_view(), name="models"),
     path('model/<pk>/', model, name='model'),
+
+    path('brands/models/carmats/', CarMatsListView.as_view(), name="carmats"),
+    path('carmat/<pk>/', carmat, name='carmat'),
 
     # path('', RedirectView.as_view(url='/home/'))
 ]
