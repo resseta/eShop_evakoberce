@@ -22,16 +22,18 @@ class CarMatsListView(ListView):
         context = super().get_context_data(**kwargs)
         brands = Brand.objects.all
         context['brands'] = brands
-        context['carmats'] = carmat
         context['accessories'] = accessories
+        context['carmats'] = CarMat.objects.all()
         return context
 
 
 def carmat(request, pk):
-    if CarMat.objects.filter(id=pk).exists():
-        carmat_ = CarMat.objects.get(id=pk)
-        context = {'carmat': carmat_}
-        return render(request, "carmat.html", context)
+    if Brand.objects.filter(id=pk).exists():
+        brand = Brand.objects.get(id=pk)
+        context = {'brand': brand}
+        request.session['brand'] = brand.id
+        return redirect('models')
+        # return render(request, "carmat.html", context)
     return redirect('carmats')
 
 
@@ -54,18 +56,33 @@ class BrandsListView(ListView):
     model = Brand
     context_object_name = 'brands'
 
-    def brand(request, pk):
-        if Brand.objects.filter(id=pk).exists():
-            brand_ = Brand.objects.get(id=pk)
-            context = {'brand': brand_}
-            return render(request, "brands.html", context)
-        return redirect('brands')
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        models = ModelName.objects.all
+        context['models'] = models
+        context['brands'] = Brand.objects.all()
+        context['accessories'] = accessories
+        return context
+
+
+def brand(request, pk):
+    if Brand.objects.filter(id=pk).exists():
+        brand_ = Brand.objects.get(id=pk)
+        context = {'brand': brand_}
+        return render(request, "brands.html", context)
+    return redirect('brands')
 
 
 class ModelsListView(ListView):
     template_name = "models.html"
     model = ModelName
     context_object_name = 'models'
+
+    def get_queryset(self):
+        brand_id = self.request.session['brand']
+        brand = Brand.objects.get(id=brand_id)
+        models = ModelName.objects.filter(brand_name=brand)
+        return models
 
 
 def model(request, pk):
