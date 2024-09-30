@@ -1,9 +1,9 @@
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
-from django.views.generic import ListView
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import ListView, DetailView, TemplateView
 from graphviz.backend import View
 
-from viewer.models import CarMat, Brand, Accessories, ModelName
+from viewer.models import Accessories, Category, Subcategory, Product
 
 
 # Create your views here.
@@ -11,21 +11,6 @@ from viewer.models import CarMat, Brand, Accessories, ModelName
 
 def home(request):
     return render(request, "home.html")
-
-
-# class CarMatsListView(ListView):
-#     template_name = "carmats.html"
-#     model = CarMat
-#     context_object_name = 'carmats'
-#
-#
-#     def get_context_data(self, *, object_list=None, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         brands = Brand.objects.all
-#         context['brands'] = brands
-#         context['accessories'] = accessories
-#         context['carmats'] = CarMat.objects.all()
-#         return context
 
 
 class AccessoriesListView(ListView):
@@ -42,65 +27,23 @@ def accessories(request, pk):
     return redirect('accessories')
 
 
-class BrandsListView(ListView):
-    template_name = "brands.html"
-    model = Brand
-    context_object_name = 'brands'
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(**kwargs)
-        models = ModelName.objects.all
-        context['models'] = models
-        context['brands'] = Brand.objects.all()
-        context['accessories'] = accessories
-        return context
-
-def brand(request, pk):
-    if Brand.objects.filter(id=pk).exists():
-        brand = Brand.objects.get(id=pk)
-        context = {'brand': brand}
-        request.session['brand'] = brand.id
-        return redirect('models')
-    return redirect('brands')
+def category_list(request):
+    categories = Category.objects.all()
+    return render(request, 'category_list.html', {'categories': categories})
 
 
-class ModelsListView(ListView):
-    template_name = "models.html"
-    model = ModelName
-    context_object_name = 'models'
-
-    def get_queryset(self):
-        brand_id = self.request.session['brand']
-        brand = Brand.objects.get(id=brand_id)
-        models = ModelName.objects.filter(brand_name=brand)
-        return models
+def subcategory_list(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    subcategories = category.subcategories.all()
+    return render(request, 'subcategory_list.html', {'category': category, 'subcategories': subcategories})
 
 
-def model(request, pk):
-    if ModelName.objects.filter(id=pk).exists():
-        model_ = ModelName.objects.get(id=pk)
-        context = {'model': model_}
-        request.session['model'] = model_.id
-        return redirect("carmats")
-    return redirect('models')
+def product_list(request, subcategory_id):
+    subcategory = get_object_or_404(Subcategory, id=subcategory_id)
+    products = subcategory.products.all()
+    return render(request, 'product_list.html', {'subcategory': subcategory, 'products': products})
 
 
-class CarMatsListView(ListView):
-    template_name = "carmat.html"
-    model = CarMat
-    context_object_name = 'carmats'
-
-    def get_queryset(self):
-        model_id = self.request.session['model']
-        model = ModelName.objects.get(id=model_id)
-        carmats = CarMat.objects.filter(model_name=model)
-        return carmats
-
-
-def carmat(request, pk):
-    if CarMat.objects.filter(id=pk).exists():
-        carmat_ = CarMat.objects.get(id=pk)
-        context = {'carmat': carmat_}
-        return render(request, "carmats.html", context)
-    return redirect('carmats')
-
+def product_detail(request, id):
+    product = get_object_or_404(Product, id=id)
+    return render(request, 'product_detail.html', {'product': product})

@@ -19,19 +19,32 @@ from django.urls import path, include
 from django.views.generic.base import RedirectView
 
 from viewer import views
-from viewer.views import home, AccessoriesListView, accessories
+from viewer.views import home, AccessoriesListView, accessories, BrandsListView, \
+    ModelsListView, model, brand
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
+    # path('', home, name='home'),
     path('', home, name="home"),
+
+    # path('carmats/', CarMatsListView.as_view(), name="carmats"),
+    # path('carmat/<pk>/', carmat, name='carmat'),
 
     path('accessories/', AccessoriesListView.as_view(), name="accessories"),
     path('accessories/<pk>/', accessories, name='accesories'),
 
-    path('categories/', views.category_list, name='category_list'),
-    path('categories/<int:category_id>/', views.subcategory_list, name='subcategory_list'),
-    path('subcategories/<int:subcategory_id>/', views.product_list, name='product_list'),
-    path('products/<int:id>/', views.product_detail, name='product_detail'),
+    path('brands/', BrandsListView.as_view(), name="brands"),
+    path('brand/<pk>/', brand, name='brand'),
 
+    path('brands/models/', ModelsListView.as_view(), name="models"),
+    path('model/<pk>/', model, name='model'),
+
+    path('brands/models/carmats/', ModelsListView.as_view(), name="carmats"),
+    # path('carmat/<pk>/', CarMatView.as_view(), name='carmat'),
+
+    # path('carmats/', views.carmats, name='carmats'),
+    path('carmats/<int:id>/', views.carmat_detail, name='carmat_detail'),
+
+    # path('', RedirectView.as_view(url='/home/'))
 ]

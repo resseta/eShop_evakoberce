@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <title>Modely {{ category.name }}</title>
+</head>
+<body>
+    <h1>Vyberte svůj model auta značky {{ category.name }}</h1>
+        <ul>
+            {% for subcategory in subcategories %}
+                <a href="{% url 'product_list' subcategory.id %}" class="btn btn-outline-danger"  role="button"  style="width: 220px;">{{ subcategory.name }}</a>
+            {% endfor %}
+        </ul>
+    <br>
+    <a href="{% url 'category_list' %}">Back to categories</a>
+</body>
+</html>
+{% endblock %}

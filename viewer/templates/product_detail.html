@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product.name }}</title>
+</head>
+<body>
+    <h2>{{ product.name }}</h2>
+    <p>{{ product.short_description }}</p>
+    <p>Cena: {{ product.price }} Kč</p>
+    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+    <p>{{ product.description }}</p>
+    <p>Skladem {{ product.quantity }} ks</p>
+    <br>
+    <a href="{% url 'product_list' product.subcategory.id %}">Back to products</a>
+</body>
+</html>
+{% endblock %}

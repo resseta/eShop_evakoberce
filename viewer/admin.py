@@ -4,9 +4,9 @@ from viewer.models import *
 
 admin.site.register(ColorOfTrim)
 admin.site.register(ColorOfMat)
-admin.site.register(Brand)
-admin.site.register(ModelName)
-admin.site.register(CarMat)
+admin.site.register(Category)
+admin.site.register(Subcategory)
+admin.site.register(Product)
 admin.site.register(Accessories)
 admin.site.register(CategoryMain)
 admin.site.register(Body)

@@ -24,7 +24,7 @@ class ColorOfMat(Model):
         return f"{self.name}"
 
 
-class Brand(Model):
+class Category(Model):
     name = CharField(max_length=20, null=False, blank=False, unique=True)
 
     def __repr__(self):
@@ -34,9 +34,9 @@ class Brand(Model):
         return f"{self.name}"
 
 
-class ModelName(Model):
+class Subcategory(Model):
     name = CharField(max_length=50, null=False, blank=False, unique=True)
-    brand_name = ForeignKey(Brand, null=True, blank=False, unique=False, on_delete=SET_NULL)
+    category  = ForeignKey(Category, on_delete=models.CASCADE, related_name='subcategories')
 
     def __repr__(self):
         return f"ModelName(name={self.name})"
@@ -55,9 +55,9 @@ class Body(Model):
         return f"{self.name}"
 
 
-class CarMat(Model):
+class Product(Model):
     name = CharField(max_length=60, null=False, blank=False)
-    model_name = ForeignKey(ModelName, null=True, blank=False, on_delete=CASCADE)
+    subcategory = ForeignKey(Subcategory, on_delete=models.CASCADE, related_name='products')
     year_of_manufacture = CharField(max_length=20, null=False, blank=False)
     body = ForeignKey(Body, null=True, blank=True, on_delete=CASCADE)
     code = CharField(max_length=20, null=True, blank=True)
@@ -66,7 +66,7 @@ class CarMat(Model):
     quantity = IntegerField()
     price = FloatField(verbose_name='Cena', null=False, blank=False)
     availability = BooleanField(default=False)
-    img = ImageField(default='no_image.png', upload_to='images')
+    image = ImageField(default='no_image.png', upload_to='products/')
 
     def __repr__(self):
         return (f"CarMat(name={self.name} brand_name={self.brand_name} model_name={self.model_name} "
@@ -78,7 +78,7 @@ class CarMat(Model):
 
 class Accessories(Model):
     name = CharField(max_length=50, null=False, blank=False)
-    model_name = ForeignKey(ModelName, null=True, blank=False, on_delete=CASCADE)
+    model_name = ForeignKey(Subcategory, null=True, blank=False, on_delete=CASCADE)
     year_of_manufacture = CharField(max_length=20, null=False, blank=False)
     code = CharField(max_length=20, null=True, blank=True)
     short_description = TextField()
@@ -97,5 +97,5 @@ class Accessories(Model):
 
 class CategoryMain(Model):
     name = CharField(max_length=20, null=False, blank=False, unique=True)
-    name_car_mat = ForeignKey(CarMat, null=True, blank=False, on_delete=CASCADE)
+    name_car_mat = ForeignKey(Product, null=True, blank=False, on_delete=CASCADE)
     name_accessories = ForeignKey(Accessories, null=True, blank=False, on_delete=CASCADE)
