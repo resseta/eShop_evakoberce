@@ -7,23 +7,6 @@
 </head>
 <body>
     <h2>EVA koberce pro {{ subcategory.name }}</h2>
-    <form method="get" action="{% url 'product_list' subcategory.id %}">
-        <label for="categories">Category:</label>
-        <select id="categories" name="category" onchange="window.location.href='{% url 'subcategory_list' 0 %}'.replace('0', this.value)">
-            <option value="">Select a category</option>
-            {% for category in categories %}
-                <option value="{{ category.id }}" {% if category.id == subcategory.category.id %}selected{% endif %}>{{ category.name }}</option>
-            {% endfor %}
-        </select>
-
-        <label for="subcategories">Subcategory:</label>
-        <select id="subcategories" name="subcategory" onchange="window.location.href='{% url 'product_list' 0 %}'.replace('0', this.value)">
-            <option value="">Select a subcategory</option>
-            {% for subc in subcategory.category.subcategories.all %}
-                <option value="{{ subc.id }}" {% if subc.id == subcategory.id %}selected{% endif %}>{{ subc.name }}</option>
-            {% endfor %}
-        </select>
-    </form>
     <p>Vyberte svůj model</p>
     </br>
     <ul>

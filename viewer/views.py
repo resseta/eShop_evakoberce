@@ -42,11 +42,7 @@ def product_list(request, subcategory_id):
     categories = Category.objects.all()
     subcategory = get_object_or_404(Subcategory, id=subcategory_id)
     products = subcategory.products.all()
-    return render(request, 'product_list.html', {
-        'subcategory': subcategory,
-        'products': products,
-        'categories': categories,
-    })
+    return render(request, 'product_list.html', {'subcategory': subcategory, 'products': products})
 
 
 def product_detail(request, id):
