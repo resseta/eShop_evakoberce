@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<head>
+    <title>Cart</title>
+</head>
+<body>
+{% if cart %}
+    <ul>
+        {% for item in cart.cart_items.all %}
+            <li>
+                {{ item.product.name }} - {{ item.quantity }} pcs - {{ item.product.price }} each
+                <!-- Odkaz pro návrat k produktu -->
+                <a href="{% url 'product_detail' item.product.id %}">Go back to product</a>
+                <a href="{% url 'remove_from_cart' item.id %}">Remove from cart</a> <!-- Ссылка для удаления товаров -->
+            </li>
+        {% endfor %}
+        <li>Total: {{ cart.total_price }}</li>
+    </ul>
+    <a href="{% url 'checkout' %}">Proceed to Checkout</a>
+{% else %}
+    <p>Your cart is empty.</p>
+{% endif %}
+{% endblock %}

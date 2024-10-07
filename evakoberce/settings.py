@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -136,3 +136,7 @@ GRAPH_MODELS = {
 
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+
+# Add this section for handling media files
+MEDIA_URL = '/media/'  # URL that handles the media served from MEDIA_ROOT
+MEDIA_ROOT = BASE_DIR / 'media'  # Absolute filesystem path to the directory that will hold user-uploaded files

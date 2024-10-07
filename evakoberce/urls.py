@@ -14,6 +14,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import RedirectView
@@ -33,5 +35,15 @@ urlpatterns = [
     path('categories/<int:category_id>/', views.subcategory_list, name='subcategory_list'),
     path('subcategories/<int:subcategory_id>/', views.product_list, name='product_list'),
     path('products/<int:id>/', views.product_detail, name='product_detail'),
+    path('add-to-cart/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
+    path('cart/', views.view_cart, name='view_cart'),
+    path('cart/remove/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
+
+    path('success/', views.success_view, name='success_view'),
+    path('error/', views.error_view, name='error_view'),
+    path('checkout/', views.checkout, name='checkout'),
 
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -37,12 +37,21 @@
                         <a href="">Vyhleddavání</a>
                     </li>
                     <li class="nav-list-item">
-                        <a href="" class="btn">Košík</a>
+                        <a href="{% url 'view_cart' %}">Cart ({{ cart.cartitem_set.count }} items)</a>
                     </li>
                 </ul>
             </nav>
         </div>
     </header>
+</body>
+<body>
+    {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
 </body>
 <body>
 

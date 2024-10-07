@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Success</h1>
+
+{% if item %}
+    <ul>
+        <li>{{ item.product.name }} - {{ item.quantity }} pcs - {{ item.product.price }} each</li>
+        <a href="{% url 'product_detail' item.product.id %}">Go back to product</a>
+    </ul>
+{% else %}
+    <p>No item found.</p>
+{% endif %}
+
+<a href="{% url 'home' %}">Go back to home</a>
+
+{% endblock %}

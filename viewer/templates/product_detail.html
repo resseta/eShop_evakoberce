@@ -3,17 +3,40 @@
 {% block content %}
 <head>
     <meta charset="UTF-8">
-    <title>{{ product.name }}</title>
-</head>
-<body>
     <h2>{{ product.name }}</h2>
+</head>
+
+    <!-- Messages Block -->
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <!-- Display Product Images -->
+    {% if product.images.all %}
+        {% for image in product.images.all %}
+            <img src="{{ image.image.url }}" alt="{{ product.name }}" width="" height="200px">
+        {% endfor %}
+    {% else %}
+        <p>No images available for this product.</p>
+    {% endif %}
+
+    <form method="post" action="{% url 'add_to_cart' product.id %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add to Cart</button>
+    </form>
+    <p><strong>Cena: </strong> {{ product.price }} Kč</p>
+
+    <h4><strong>Kratký popis</strong></h4>
     <p>{{ product.short_description }}</p>
-    <p>Cena: {{ product.price }} Kč</p>
-    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+    <h4><strong>Podrobná informace o produktu</strong></h4>
     <p>{{ product.description }}</p>
-    <p>Skladem {{ product.quantity }} ks</p>
+    <p><strong>Skladem: </strong> {{ product.quantity }} ks</p>
     <br>
     <a href="{% url 'product_list' product.subcategory.id %}">Back to products</a>
 </body>
-</html>
 {% endblock %}

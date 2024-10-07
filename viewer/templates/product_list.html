@@ -9,13 +9,10 @@
     <h2>EVA koberce pro {{ subcategory.name }}</h2>
     <p>Vyberte svůj model</p>
     </br>
-    <ul>
         {% for product in products %}
-                <a href="{% url 'product_detail' product.id %}"  class="btn btn-outline-danger"  role="button"  style="width: 300px;">{{ product.name }}</a>
-<!--                <p>Cena: {{ product.price }} ,- Kč</p>-->
-                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            <a href="{% url 'product_detail' product.id %}"  class="btn btn-outline-danger"  role="button"  style="width: 300px;">{{ product.name }}</a>
+            <img src="{{ product.image.url }}" width="" height="150px" alt="{{ product.name }}">
         {% endfor %}
-    </ul>
     <br>
     <a href="{% url 'subcategory_list' subcategory.category.id %}">Back to subcategories</a>
 </body>
