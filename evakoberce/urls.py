@@ -23,6 +23,9 @@ from django.views.generic.base import RedirectView
 from viewer import views
 from viewer.views import home, AccessoriesListView, accessories
 
+
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 
@@ -42,6 +45,8 @@ urlpatterns = [
     path('success/', views.success_view, name='success_view'),
     path('error/', views.error_view, name='error_view'),
     path('checkout/', views.checkout, name='checkout'),
+
+    #path('accounts/signup/', SignUpView.as_view(), name='signup')
 
 ]
 

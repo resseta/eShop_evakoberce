@@ -16,7 +16,7 @@ def home(request):
     products = Product.objects.all()
     cart = None
     if request.session.session_key:
-        cart = Cart.objects.get(session_key=request.session.session_key)
+        cart = Cart.objects.get_or_create(session_key=request.session.session_key)
 
     context = {
         'products': products,
