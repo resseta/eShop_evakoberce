@@ -14,7 +14,7 @@
             <img src="{{ product.image.url }}" width="" height="150px" alt="{{ product.name }}">
         {% endfor %}
     <br>
-    <a href="{% url 'subcategory_list' subcategory.category.id %}">Back to subcategories</a>
+    <a href="{% url 'subcategory_list' subcategory.category.id %}">Zpět na {{ subcategory.category }}</a>
 </body>
 </html>
 {% endblock %}

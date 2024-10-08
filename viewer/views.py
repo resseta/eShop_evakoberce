@@ -154,7 +154,7 @@ def checkout(request):
                 'city': request.POST['city'],
                 'postal_code': request.POST['postal_code'],
                 'country': request.POST['country'],
-                'telefon': request.POST['telefon'],
+                'telefon': request.POST['phone'],
                 'email': request.POST['email'],
                 'shipping_method': shipping_method
             }
@@ -164,7 +164,7 @@ def checkout(request):
             shipping.city = request.POST['city']
             shipping.postal_code = request.POST['postal_code']
             shipping.country = request.POST['country']
-            shipping.telefon = request.POST['telefon']
+            shipping.telefon = request.POST['phone']
             shipping.email = request.POST['email']
             shipping.shipping_method = shipping_method
             shipping.save()

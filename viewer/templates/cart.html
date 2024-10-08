@@ -11,14 +11,14 @@
             <li>
                 {{ item.product.name }} - {{ item.quantity }} pcs - {{ item.product.price }} each
                 <!-- Odkaz pro návrat k produktu -->
-                <a href="{% url 'product_detail' item.product.id %}">Go back to product</a>
-                <a href="{% url 'remove_from_cart' item.id %}">Remove from cart</a> <!-- Ссылка для удаления товаров -->
+                <a href="{% url 'product_detail' item.product.id %}">Zpět na produkt</a>
+                <a href="{% url 'remove_from_cart' item.id %}">❌</a> <!-- Ссылка для удаления товаров -->
             </li>
         {% endfor %}
-        <li>Total: {{ cart.total_price }}</li>
+        <li>Celkem: {{ cart.total_price }}</li>
     </ul>
-    <a href="{% url 'checkout' %}">Proceed to Checkout</a>
+    <a href="{% url 'checkout' %}">Přejít k pokladně</a>
 {% else %}
-    <p>Your cart is empty.</p>
+    <p>Váš košík je prázdný.</p>
 {% endif %}
 {% endblock %}

@@ -21,7 +21,7 @@
             <img src="{{ image.image.url }}" alt="{{ product.name }}" width="" height="200px">
         {% endfor %}
     {% else %}
-        <p>No images available for this product.</p>
+        <p>Pro tento produkt nejsou k dispozici žádné obrázky.</p>
     {% endif %}
 
     <form method="post" action="{% url 'add_to_cart' product.id %}">
@@ -37,6 +37,6 @@
     <p>{{ product.description }}</p>
     <p><strong>Skladem: </strong> {{ product.quantity }} ks</p>
     <br>
-    <a href="{% url 'product_list' product.subcategory.id %}">Back to products</a>
+    <a href="{% url 'product_list' product.subcategory.id %}">Zpět na {{ product.subcategory }}</a>
 </body>
 {% endblock %}
