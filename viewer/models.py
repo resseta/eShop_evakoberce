@@ -1,6 +1,9 @@
 from django.db import models
 from datetime import datetime
 
+from django.template.defaultfilters import default
+from django.utils import timezone
+
 # Create your models here.
 from django.db.models import *
 
@@ -124,7 +127,7 @@ class Cart(Model):
     updated_at = DateTimeField(auto_now=True)
 
     def total_price(self):
-        return sum(item.total_price() for item in self.cart_items.all())
+        return sum(item.total_price() for item in self.cart_items.all())  # Используем related_name cart_items
 
     def __str__(self):
         return f"Cart {self.id} for session {self.session_key}"
@@ -136,9 +139,11 @@ class CartItem(Model):
     mat_color = ForeignKey(ColorOfMat, on_delete=models.CASCADE, related_name='cart_items')
     trim_color = ForeignKey(ColorOfTrim, on_delete=models.CASCADE, related_name='cart_items')
     quantity = PositiveIntegerField(default=1)
+    price = DecimalField(max_digits=10, decimal_places=2)
 
     def total_price(self):
-        return self.product.price * self.quantity
+        # return self.product.price * self.quantity
+        return self.quantity * self.price
 
     def __str__(self):
         return f"{self.product.name} (x{self.quantity}) in cart {self.cart.id}"
@@ -179,4 +184,30 @@ class Shipping(Model):
     shipping_status = CharField(max_length=50, default='Pending')
     created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)
+
+
+class Order(Model):
+    order_id = AutoField(primary_key=True)
+    cart = models.OneToOneField(Cart, on_delete=models.CASCADE)
+    customer_name = CharField(max_length=255)
+    customer_email = EmailField()
+    customer_phone = CharField(max_length=20, default='000 000 000')
+    customer_address = CharField(max_length=255)
+    customer_city = CharField(max_length=100)
+    customer_postal_code = CharField(max_length=20)
+    customer_country = CharField(max_length=100, default='Česká republika')
+    order_date = DateTimeField(auto_now_add=True)
+    total_amount = DecimalField(max_digits=10, decimal_places=2)
+    status = CharField(max_length=50, default='New')
+    created_at = DateTimeField(auto_now_add=True)
+
+
+
+class OrderItem(Model):
+    order = ForeignKey(Order, related_name='order_items', on_delete=models.CASCADE)
+    product = ForeignKey('Product', on_delete=models.CASCADE)
+    mat_color = CharField(max_length=50)
+    trim_color = CharField(max_length=50)
+    quantity = PositiveIntegerField()
+    price = DecimalField(max_digits=10, decimal_places=2)  # Assuming each item has a price
 

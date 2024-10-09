@@ -1,17 +1,28 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Success</h1>
+    <body>
+        <h2>Order Successful!</h2>
+        <div>
+            {% if order %}
+               <p><strong>Order ID:</strong> {{ order.order_id }}</p>
+                <p><strong>Customer Name:</strong> {{ order.customer_name }}</p>
+                <p><strong>Customer Email:</strong> {{ order.customer_email }}</p>
+                <p><strong>Customer Phone:</strong> {{ order.customer_phone }}</p>
+                <p><strong>Total Amount:</strong> {{ order.total_amount }}</p>
 
-{% if item %}
-    <ul>
-        <li>{{ item.product.name }} - {{ item.quantity }} pcs - {{ item.product.price }} each</li>
-        <a href="{% url 'product_detail' item.product.id %}">Go back to product</a>
-    </ul>
-{% else %}
-    <p>No item found.</p>
-{% endif %}
-
-<a href="{% url 'home' %}">Go back to home</a>
-
+                <h2>Order Items:</h2>
+                <ul>
+                    {% for item in order.order_items.all %}
+                        <li>{{ item.product.name }} - {{ item.quantity }} x {{ item.price }} - Mat Color: {{ item.mat_color }} - Trim Color: {{ item.trim_color }}</li>
+                    {% empty %}
+                        <li>No items in order.</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No order found.</p>
+            {% endif %}
+            <p>Language Code: {{ LANGUAGE_CODE }}</p>
+        </div>
+    </body>
 {% endblock %}

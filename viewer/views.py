@@ -1,26 +1,34 @@
+from venv import logger
+
+from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, TemplateView
+from django.utils.translation import get_language
+import logging
 
-from .models import Product, Cart, CartItem, ColorOfMat, ColorOfTrim, Payment, Shipping, PaymentMethod, ShippingMethod
+from .models import Product, Cart, CartItem, ColorOfMat, ColorOfTrim, Payment, Shipping, PaymentMethod, ShippingMethod, \
+    OrderItem
 from .forms import AddToCartForm
 from django.contrib import messages
+from django.utils.translation import get_language
 
-from viewer.models import Accessories, Category, Subcategory, Product
+from viewer.models import Accessories, Category, Subcategory, Product, Order
 
+logger = logging.getLogger(__name__)
 
 # Create your views here.
 
 
 def home(request):
     products = Product.objects.all()
-    cart = None
-    if request.session.session_key:
-        cart = Cart.objects.get(session_key=request.session.session_key)
+    # cart = None
+    # if request.session.session_key:
+    #     cart = Cart.objects.get(session_key=request.session.session_key)
 
     context = {
         'products': products,
-        'cart': cart
+        # 'cart': cart
     }
     return render(request, 'home.html', context)
 
@@ -93,14 +101,19 @@ def add_to_cart(request, product_id):
     if request.method == 'POST':
         form = AddToCartForm(request.POST)
         if form.is_valid():
+            # Получаем или создаем корзину
             cart, created = Cart.objects.get_or_create(session_key=request.session.session_key)
+
+            # Создаем элемент в корзину с указанием цены
             CartItem.objects.create(
                 cart=cart,
                 product=product,
                 mat_color=form.cleaned_data['mat_color'],
                 trim_color=form.cleaned_data['trim_color'],
-                quantity=form.cleaned_data['quantity']
+                quantity=form.cleaned_data['quantity'],
+                price=product.price  # Обязательно указываем цену продукта
             )
+
             messages.success(request, 'Product was successfully added to the cart!')
             return redirect('home')  # Přesměrování na hlavní stránku
 
@@ -181,40 +194,102 @@ def checkout(request):
         'shipping_methods': shipping_methods,
     })
 
+# Обновить success_view
 def success_view(request):
-    if not request.session.session_key:
-        request.session.create()
+    order_id = request.session.get('order_id')
+    logger.info(f"Order ID retrieved from session: {order_id}")
 
-    try:
-        cart = Cart.objects.get(session_key=request.session.session_key)
-        item = cart.cart_items.first()  # nebo jiná metoda pro získání potřebného item
-    except Cart.DoesNotExist:
-        item = None
+    if not order_id:
+        messages.error(request, 'Order ID not found in session. Please try again.')
+        return redirect('checkout')
 
-    return render(request, 'success.html', {'item': item})
+    order = get_object_or_404(Order, order_id=order_id)
+    logger.info(f"Order retrieved from database: {order}")
+
+    context = {
+        'order': order,
+        'LANGUAGE_CODE': get_language(),
+    }
+
+    return render(request, 'success.html', context)
+
 
 def remove_from_cart(request, item_id):
     cart_item = get_object_or_404(CartItem, id=item_id)
     cart_item.delete()
     return redirect('view_cart')
 
-def place_order(request):
-    if not request.session.session_key:
-        request.session.create()
-
-    try:
-        cart = Cart.objects.get(session_key=request.session.session_key)
-        item = cart.cartitem_set.first()  # Používejte správné spojení
-    except Cart.DoesNotExist:
-        cart = None
-        item = None
-
+# Обновить create_order
+def create_order(request):
     if request.method == 'POST':
-        # Логика оформления заказа
-        messages.success(request, 'Your order has been processed successfully!')
-        return redirect('success_view')
+        session_key = request.session.session_key
+        if not session_key:
+            request.session.create()
+            session_key = request.session.session_key
 
-    return render(request, 'checkout.html', {'cart': cart, 'item': item})
+        cart = Cart.objects.filter(session_key=session_key).first()
+        if not cart:
+            messages.error(request,
+                           'Ваша корзина пуста. Пожалуйста, добавьте товары в корзину перед тем, как оформить заказ.')
+            return redirect('cart_empty')
+
+        cart_items = CartItem.objects.filter(cart=cart)
+
+        customer_name = request.POST.get('customer_name')
+        customer_email = request.POST.get('customer_email')
+        customer_phone = request.POST.get('customer_phone')
+        customer_address = request.POST.get('customer_address')
+        customer_city = request.POST.get('customer_city')
+        customer_postal_code = request.POST.get('customer_postal_code')
+        customer_country = request.POST.get('customer_country')
+
+        if not all(
+                [customer_name, customer_email, customer_phone, customer_address, customer_city, customer_postal_code,
+                 customer_country]):
+            logger.error("Form data missing required fields.")
+            return redirect('checkout')
+
+        with transaction.atomic():
+            order = Order.objects.create(
+                cart=cart,
+                customer_name=customer_name,
+                customer_email=customer_email,
+                customer_phone=customer_phone,
+                customer_address=customer_address,
+                customer_city=customer_city,
+                customer_postal_code=customer_postal_code,
+                customer_country=customer_country,
+                total_amount=cart.total_price() if cart else 0,
+                status='New'
+            )
+
+            logger.info(f"Order created: {order.order_id}")
+
+            for cart_item in cart_items:
+                OrderItem.objects.create(
+                    order=order,
+                    product=cart_item.product,
+                    quantity=cart_item.quantity,
+                    price=cart_item.price,
+                    mat_color=cart_item.mat_color,
+                    trim_color=cart_item.trim_color
+                )
+
+            cart.delete()
+
+        request.session['order_id'] = order.order_id
+        logger.info(f"Order ID saved in session: {order.order_id}")
+
+        messages.success(request, 'Ваш заказ успешно обработан!')
+        logger.info(f"Order saved successfully: {order.order_id}")
+
+        return redirect('success')
+
+    return redirect('checkout')
+
+
+def place_order(request):
+    return redirect('create_order')
 
 def error_view(request):
     return render(request, 'error.html')
