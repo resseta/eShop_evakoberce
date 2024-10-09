@@ -24,8 +24,6 @@ from viewer import views
 from viewer.views import home, AccessoriesListView, accessories
 
 
-
-
 urlpatterns = [
     path('admin/', admin.site.urls),
 
@@ -46,7 +44,7 @@ urlpatterns = [
     path('error/', views.error_view, name='error_view'),
     path('checkout/', views.checkout, name='checkout'),
 
-    #path('accounts/signup/', SignUpView.as_view(), name='signup')
+    path('accounts/signup/', SignUpView.as_view(), name='signup')
 
 ]
 
