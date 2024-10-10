@@ -23,8 +23,8 @@ admin.site.register(ColorOfMat)
 admin.site.register(Category)
 admin.site.register(Subcategory)
 
-admin.site.register(Accessories)
-admin.site.register(CategoryMain)
+
+
 admin.site.register(Body)
 
 admin.site.register(Product, ProductAdmin)

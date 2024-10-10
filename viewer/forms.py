@@ -1,9 +1,14 @@
 from django import forms
-from .models import Product, ColorOfMat, ColorOfTrim
 
 
-class AddToCartForm(forms.Form):
-    product_id = forms.IntegerField(widget=forms.HiddenInput())
-    mat_color = forms.ModelChoiceField(queryset=ColorOfMat.objects.filter(), required=True)
-    trim_color = forms.ModelChoiceField(queryset=ColorOfTrim.objects.filter(), required=True)
-    quantity = forms.IntegerField(min_value=1, initial=1)
+class OrderForm(forms.Form):
+    customer_name = forms.CharField(max_length=35)
+    customer_surname = forms.CharField(max_length=35)
+    customer_email = forms.EmailField()
+    customer_phone = forms.CharField(max_length=20, default='+420 000 000 000')
+    customer_address = forms.CharField(max_length=255)
+    customer_city = forms.CharField(max_length=50)
+    customer_postal_code = forms.CharField(max_length=6)
+    customer_country = forms.CharField(max_length=100, initial='Česká republika')
+    delivery_method = forms.ChoiceField(choices=[('standard', 'Standard'), ('express', 'Express')])
+    comments = forms.CharField(widget=forms.Textarea, required=False)

@@ -1,50 +1,9 @@
-from venv import logger
-
-from django.db import transaction
-from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView, DetailView, TemplateView
-from django.utils.translation import get_language
-import logging
-
-from .models import Product, Cart, CartItem, ColorOfMat, ColorOfTrim, Payment, Shipping, PaymentMethod, ShippingMethod, \
-    OrderItem
-from .forms import AddToCartForm
+from django.db import transaction
 from django.contrib import messages
-from django.utils.translation import get_language
-
-from viewer.models import Accessories, Category, Subcategory, Product, Order
-
-logger = logging.getLogger(__name__)
-
-# Create your views here.
-
-
-def home(request):
-    products = Product.objects.all()
-    # cart = None
-    # if request.session.session_key:
-    #     cart = Cart.objects.get(session_key=request.session.session_key)
-
-    context = {
-        'products': products,
-        # 'cart': cart
-    }
-    return render(request, 'home.html', context)
-
-
-class AccessoriesListView(ListView):
-    template_name = "accessories.html"
-    model = Accessories
-    context_object_name = 'accessories'
-
-
-def accessories(request, pk):
-    if Accessories.objects.filter(id=pk).exists():
-        accessories_ = Accessories.objects.get(id=pk)
-        context = {'accessories': accessories_}
-        return render(request, "accessories.html", context)
-    return redirect('accessories')
+from .models import Category, Subcategory, Subsubcategory, Product, Cart, CartItem, Order, OrderItem, ColorOfMat, \
+    ColorOfTrim
+from .forms import OrderForm
 
 
 def category_list(request):
@@ -52,245 +11,116 @@ def category_list(request):
     return render(request, 'category_list.html', {'categories': categories})
 
 
-def subcategory_list(request, category_id):
-    category = get_object_or_404(Category, id=category_id)
+def subcategory_list(request, category_name):
+    category = get_object_or_404(Category, name=category_name)
     subcategories = category.subcategories.all()
     return render(request, 'subcategory_list.html', {'category': category, 'subcategories': subcategories})
 
 
-def product_list(request, subcategory_id):
-    categories = Category.objects.all()
-    subcategory = get_object_or_404(Subcategory, id=subcategory_id)
-    products = subcategory.products.all()
-    return render(request, 'product_list.html', {'subcategory': subcategory, 'products': products})
+def subsubcategory_list(request, category_name, subcategory_name):
+    category = get_object_or_404(Category, name=category_name)
+    subcategory = get_object_or_404(Subcategory, name=subcategory_name, category=category)
+    subsubcategories = subcategory.subsubcategories.all()
+    return render(request, 'subsubcategory_list.html',
+                  {'category': category, 'subcategory': subcategory, 'subsubcategories': subsubcategories})
 
 
-def product_detail(request, id):
-    product = get_object_or_404(Product, id=id)
-    mat_colors = ColorOfMat.objects.filter()
-    trim_colors = ColorOfTrim.objects.filter()
-    form = AddToCartForm()
+def product_list(request, category_name, subcategory_name, subsubcategory_name):
+    category = get_object_or_404(Category, name=category_name)
+    subcategory = get_object_or_404(Subcategory, name=subcategory_name, category=category)
+    subsubcategory = get_object_or_404(Subsubcategory, name=subsubcategory_name, subcategory=subcategory)
+    products = subsubcategory.products.all()
+    return render(request, 'product_list.html', {'subcategory': subsubcategory, 'products': products})
 
-    if request.method == 'POST':
-        form = AddToCartForm(request.POST)
-        if form.is_valid():
-            cart, created = Cart.objects.get_or_create(session_key=request.session.session_key)
-            CartItem.objects.create(
-                cart=cart,
-                product=product,
-                mat_color=form.cleaned_data['mat_color'],
-                trim_color=form.cleaned_data['trim_color'],
-                quantity=form.cleaned_data['quantity']
-            )
-            messages.success(request, 'Product was successfully added to the cart!')
-            return redirect('product_detail', id=product.id)
-    else:
-        form = AddToCartForm(initial={'product_id': product.id})
 
-    context = {
-        'product': product,
-        'mat_colors': mat_colors,
-        'trim_colors': trim_colors,
-        'form': form
-    }
-    return render(request, 'product_detail.html', context)
+def product_detail(request, category_name, subcategory_name, subsubcategory_name, product_name):
+    product = get_object_or_404(Product, name=product_name)
+    mat_colors = ColorOfMat.objects.all()
+    trim_colors = ColorOfTrim.objects.all()
+    return render(request, 'product_detail.html',
+                  {'product': product, 'mat_colors': mat_colors, 'trim_colors': trim_colors})
+
 
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-
-    if request.method == 'POST':
-        form = AddToCartForm(request.POST)
-        if form.is_valid():
-            # Получаем или создаем корзину
-            cart, created = Cart.objects.get_or_create(session_key=request.session.session_key)
-
-            # Создаем элемент в корзину с указанием цены
-            CartItem.objects.create(
-                cart=cart,
-                product=product,
-                mat_color=form.cleaned_data['mat_color'],
-                trim_color=form.cleaned_data['trim_color'],
-                quantity=form.cleaned_data['quantity'],
-                price=product.price  # Обязательно указываем цену продукта
-            )
-
-            messages.success(request, 'Product was successfully added to the cart!')
-            return redirect('home')  # Přesměrování na hlavní stránku
-
-    else:
-        form = AddToCartForm(initial={'product_id': product.id})
-
-    context = {
-        'product': product,
-        'form': form
-    }
-    return render(request, 'product_detail.html', context)
-
-def view_cart(request):
-    if not request.session.session_key:
+    session_key = request.session.session_key
+    if not session_key:
         request.session.create()
+        session_key = request.session.session_key
 
-    try:
-        cart = Cart.objects.get(session_key=request.session.session_key)
-    except Cart.DoesNotExist:
-        cart = None
+    cart, created = Cart.objects.get_or_create(session_key=session_key)
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
 
-    context = {'cart': cart}
-    return render(request, 'cart.html', context)
-
-
-def checkout(request):
-    cart = Cart.objects.get(session_key=request.session.session_key)
-
-    if request.method == 'POST':
-        payment_method = PaymentMethod.objects.get(id=request.POST['payment_method'])
-        shipping_method = ShippingMethod.objects.get(id=request.POST['shipping_method'])
-
-        # Zpracování a vytvoření/aktualizace platby
-        payment, created = Payment.objects.get_or_create(
-            cart=cart,
-            defaults={
-                'total_price': cart.total_price(),
-                'payment_method': payment_method
-            }
-        )
-        if not created:
-            payment.total_price = cart.total_price()
-            payment.payment_method = payment_method
-            payment.save()
-
-        # Zpracování a vytváření/aktualizace doručení
-        shipping, created = Shipping.objects.get_or_create(
-            cart=cart,
-            defaults={
-                'address': request.POST['address'],
-                'city': request.POST['city'],
-                'postal_code': request.POST['postal_code'],
-                'country': request.POST['country'],
-                'telefon': request.POST['phone'],
-                'email': request.POST['email'],
-                'shipping_method': shipping_method
-            }
-        )
-        if not created:
-            shipping.address = request.POST['address']
-            shipping.city = request.POST['city']
-            shipping.postal_code = request.POST['postal_code']
-            shipping.country = request.POST['country']
-            shipping.telefon = request.POST['phone']
-            shipping.email = request.POST['email']
-            shipping.shipping_method = shipping_method
-            shipping.save()
-
-        messages.success(request, 'Your order has been processed successfully!')
-        return redirect('success_view')
-
-    payment_methods = PaymentMethod.objects.all()
-    shipping_methods = ShippingMethod.objects.all()
-
-    return render(request, 'checkout.html', {
-        'cart': cart,
-        'payment_methods': payment_methods,
-        'shipping_methods': shipping_methods,
-    })
-
-# Обновить success_view
-def success_view(request):
-    order_id = request.session.get('order_id')
-    logger.info(f"Order ID retrieved from session: {order_id}")
-
-    if not order_id:
-        messages.error(request, 'Order ID not found in session. Please try again.')
-        return redirect('checkout')
-
-    order = get_object_or_404(Order, order_id=order_id)
-    logger.info(f"Order retrieved from database: {order}")
-
-    context = {
-        'order': order,
-        'LANGUAGE_CODE': get_language(),
-    }
-
-    return render(request, 'success.html', context)
-
-
-def remove_from_cart(request, item_id):
-    cart_item = get_object_or_404(CartItem, id=item_id)
-    cart_item.delete()
+    messages.success(request, f'{product.name} добавлен в корзину.')
     return redirect('view_cart')
 
-# Обновить create_order
+
+def view_cart(request):
+    session_key = request.session.session_key
+    if not session_key:
+        request.session.create()
+        session_key = request.session.session_key
+
+    cart = Cart.objects.filter(session_key=session_key).first()
+    return render(request, 'cart.html', {'cart': cart})
+
+
 def create_order(request):
     if request.method == 'POST':
-        session_key = request.session.session_key
-        if not session_key:
-            request.session.create()
+        form = OrderForm(request.POST)
+        if form.is_valid():
             session_key = request.session.session_key
+            if not session_key:
+                request.session.create()
+                session_key = request.session.session_key
 
-        cart = Cart.objects.filter(session_key=session_key).first()
-        if not cart:
-            messages.error(request,
-                           'Ваша корзина пуста. Пожалуйста, добавьте товары в корзину перед тем, как оформить заказ.')
-            return redirect('cart_empty')
+            cart = Cart.objects.filter(session_key=session_key).first()
+            if not cart:
+                messages.error(request,
+                               'Ваша корзина пуста. Пожалуйста, добавьте товары в корзину перед тем, как оформить заказ.')
+                return redirect('view_cart')
 
-        cart_items = CartItem.objects.filter(cart=cart)
-
-        customer_name = request.POST.get('customer_name')
-        customer_email = request.POST.get('customer_email')
-        customer_phone = request.POST.get('customer_phone')
-        customer_address = request.POST.get('customer_address')
-        customer_city = request.POST.get('customer_city')
-        customer_postal_code = request.POST.get('customer_postal_code')
-        customer_country = request.POST.get('customer_country')
-
-        if not all(
-                [customer_name, customer_email, customer_phone, customer_address, customer_city, customer_postal_code,
-                 customer_country]):
-            logger.error("Form data missing required fields.")
-            return redirect('checkout')
-
-        with transaction.atomic():
-            order = Order.objects.create(
-                cart=cart,
-                customer_name=customer_name,
-                customer_email=customer_email,
-                customer_phone=customer_phone,
-                customer_address=customer_address,
-                customer_city=customer_city,
-                customer_postal_code=customer_postal_code,
-                customer_country=customer_country,
-                total_amount=cart.total_price() if cart else 0,
-                status='New'
-            )
-
-            logger.info(f"Order created: {order.order_id}")
-
-            for cart_item in cart_items:
-                OrderItem.objects.create(
-                    order=order,
-                    product=cart_item.product,
-                    quantity=cart_item.quantity,
-                    price=cart_item.price,
-                    mat_color=cart_item.mat_color,
-                    trim_color=cart_item.trim_color
+            cart_items = CartItem.objects.filter(cart=cart)
+            with transaction.atomic():
+                order = Order.objects.create(
+                    cart=cart,
+                    customer_name=form.cleaned_data['customer_name'],
+                    customer_surname=form.cleaned_data['customer_surname'],
+                    customer_email=form.cleaned_data['customer_email'],
+                    customer_phone=form.cleaned_data['customer_phone'],
+                    customer_address=form.cleaned_data['customer_address'],
+                    customer_city=form.cleaned_data['customer_city'],
+                    customer_postal_code=form.cleaned_data['customer_postal_code'],
+                    customer_country=form.cleaned_data['customer_country'],
+                    total_amount=cart.total_price(),
                 )
 
-            cart.delete()
+                for cart_item in cart_items:
+                    OrderItem.objects.create(
+                        order=order,
+                        product=cart_item.product,
+                        quantity=cart_item.quantity,
+                        price=cart_item.product.price
+                    )
 
-        request.session['order_id'] = order.order_id
-        logger.info(f"Order ID saved in session: {order.order_id}")
+                cart.delete()
 
-        messages.success(request, 'Ваш заказ успешно обработан!')
-        logger.info(f"Order saved successfully: {order.order_id}")
+            request.session['order_id'] = order.id
+            messages.success(request, 'Ваш заказ успешно оформлен!')
+            return redirect('success')
 
-        return redirect('success')
+    messages.error(request, 'Ошибка при оформлении заказа. Пожалуйста, попробуйте снова.')
+    return redirect('view_cart')
 
-    return redirect('checkout')
 
+def success_view(request):
+    order_id = request.session.get('order_id')
+    if not order_id:
+        messages.error(request, 'Order ID не найден в сессии. Пожалуйста, попробуйте снова.')
+        return redirect('view_cart')
 
-def place_order(request):
-    return redirect('create_order')
-
-def error_view(request):
-    return render(request, 'error.html')
-
+    order = get_object_or_404(Order, id=order_id)
+    return render(request, 'success.html', {'order': order})

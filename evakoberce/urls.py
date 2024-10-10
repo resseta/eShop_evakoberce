@@ -26,22 +26,16 @@ from viewer.views import home, AccessoriesListView, accessories
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('', home, name="home"),
 
-    path('accessories/', AccessoriesListView.as_view(), name="accessories"),
-    path('accessories/<pk>/', accessories, name='accesories'),
-
-    path('categories/', views.category_list, name='category_list'),
-    path('categories/<int:category_id>/', views.subcategory_list, name='subcategory_list'),
-    path('subcategories/<int:subcategory_id>/', views.product_list, name='product_list'),
-    path('products/<int:id>/', views.product_detail, name='product_detail'),
+    path('home/', views.category_list, name='category_list'),
+    path('home/<str:category_name>/', views.subcategory_list, name='subcategory_list'),
+    path('home/<str:category_name>/<str:subcategory_name>/', views.subsubcategory_list, name='subsubcategory_list'),
+    path('home/<str:category_name>/<str:subcategory_name>/<str:subsubcategory_name>/', views.product_list,
+         name='product_list'),
+    path('home/<str:category_name>/<str:subcategory_name>/<str:subsubcategory_name>/<str:product_name>/',
+         views.product_detail, name='product_detail'),
     path('add-to-cart/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
     path('cart/', views.view_cart, name='view_cart'),
-    path('cart/remove/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
-
-
-    path('error/', views.error_view, name='error_view'),
-    path('checkout/', views.checkout, name='checkout'),
     path('create_order/', views.create_order, name='create_order'),
     path('success/', views.success_view, name='success'),
 

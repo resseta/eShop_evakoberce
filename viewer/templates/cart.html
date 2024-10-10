@@ -1,24 +1,17 @@
-{% extends "base.html" %}
-
-{% block content %}
 <head>
-    <title>Cart</title>
+    <title>Корзина</title>
 </head>
 <body>
-{% if cart %}
-    <ul>
-        {% for item in cart.cart_items.all %}
-            <li>
-                {{ item.product.name }} - {{ item.quantity }} pcs - {{ item.product.price }} each
-                <!-- Odkaz pro návrat k produktu -->
-                <a href="{% url 'product_detail' item.product.id %}">Zpět na produkt</a>
-                <a href="{% url 'remove_from_cart' item.id %}">❌</a> <!-- Ссылка для удаления товаров -->
-            </li>
-        {% endfor %}
-        <li>Celkem: {{ cart.total_price }}</li>
-    </ul>
-    <a href="{% url 'checkout' %}">Přejít k pokladně</a>
-{% else %}
-    <p>Váš košík je prázdný.</p>
-{% endif %}
-{% endblock %}
+    <h1>Ваша Корзина</h1>
+    {% if cart and cart.items.exists %}
+        <ul>
+            {% for item in cart.items.all %}
+                <li>{{ item.product.name }} - {{ item.quantity }} x {{ item.product.price }} = {{ item.total_price }}</li>
+            {% endfor %}
+        </ul>
+        <p>Итого: {{ cart.total_price }}</p>
+        <a href="{% url 'create_order' %}">Перейти к оформлению заказа</a>
+    {% else %}
+        <p>Ваша корзина пуста.</p>
+    {% endif %}
+</body>

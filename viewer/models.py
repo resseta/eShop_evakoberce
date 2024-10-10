@@ -1,213 +1,121 @@
 from django.db import models
-from datetime import datetime
-
-from django.template.defaultfilters import default
-from django.utils import timezone
-
-# Create your models here.
-from django.db.models import *
+from django.utils.translation import gettext_lazy as _
+from django.utils.timezone import now
 
 
-class ColorOfTrim(Model):
-    name = CharField(max_length=20, null=False, blank=False, unique=True)
-
-    class Meta:
-        db_table = 'coloroftrim'
-
-    def __repr__(self):
-        return f"ColorOfTrim(name={self.name})"
-
-    def __str__(self):
-        return f"{self.name}"
-
-
-class ColorOfMat(Model):
-    name = CharField(max_length=20, null=False, blank=False, unique=True)
-
-    class Meta:
-        db_table = 'colorofmat'
-
-    def __repr__(self):
-        return f"ColorOfMat(name={self.name})"
-
-    def __str__(self):
-        return f"{self.name}"
-
-
-class Category(Model):
-    name = CharField(max_length=20, null=False, blank=False, unique=True)
-
-    def __repr__(self):
-        return f"Brand(name={self.name})"
-
-    def __str__(self):
-        return f"{self.name}"
-
-
-class Subcategory(Model):
-    name = CharField(max_length=50, null=False, blank=False, unique=True)
-    category  = ForeignKey(Category, on_delete=models.CASCADE, related_name='subcategories')
-
-    def __repr__(self):
-        return f"ModelName(name={self.name})"
-
-    def __str__(self):
-        return f"{self.name}"
-
-
-class Body(Model):
-    name = CharField(max_length=20, null=True, blank=True, unique=True)
-
-    def __repr__(self):
-        return f"Body(name={self.name})"
-
-    def __str__(self):
-        return f"{self.name}"
-
-
-class Product(Model):
-    name = CharField(max_length=60, null=False, blank=False)
-    subcategory = ForeignKey(Subcategory, on_delete=models.CASCADE, related_name='products')
-    year_of_manufacture = CharField(max_length=20, null=False, blank=False)
-    body = ForeignKey(Body, null=True, blank=True, on_delete=CASCADE)
-    code = CharField(max_length=20, null=True, blank=True)
-    short_description = TextField()
-    description = TextField()
-    quantity = PositiveIntegerField(default=1)
-    price = FloatField(verbose_name='Cena', null=False, blank=False)
-    availability = BooleanField(default=False)
-    image = ImageField(default='no_image.png', upload_to='products/')
-    mat_color = ForeignKey(ColorOfMat, default=1, on_delete=models.CASCADE, related_name='products')
-    trim_color = ForeignKey(ColorOfTrim, default=1, on_delete=models.CASCADE, related_name='products')
-
-    def __repr__(self):
-        return (f"CarMat(name={self.name} brand_name={self.brand_name} model_name={self.model_name} "
-                f"year_of_manufacture={self.year_of_manufacture} body={self.body})")
-
-    def __str__(self):
-        return f"{self.name}"
-
-class ProductImage(Model):
-    product = ForeignKey(Product, related_name='images',
-                                on_delete=CASCADE)  # Establish one-to-many relationship
-    image = ImageField(upload_to='products/')
-
-    def __str__(self):
-        return f"Image for {self.product.name}"
-
-
-class Accessories(Model):
-    name = CharField(max_length=50, null=False, blank=False)
-    model_name = ForeignKey(Subcategory, null=True, blank=False, on_delete=CASCADE)
-    year_of_manufacture = CharField(max_length=20, null=False, blank=False)
-    code = CharField(max_length=20, null=True, blank=True)
-    short_description = TextField()
-    description = TextField()
-    quantity = IntegerField()
-    price = FloatField(verbose_name='Cena', null=False, blank=False)
-    availability = BooleanField(default=False)
-    img = ImageField(default='no_image.png', upload_to='images')
-
-    def __repr__(self):
-        return f"Accessories(name={self.name})"
-
-    def __str__(self):
-        return f"{self.name}"
-
-
-class CategoryMain(Model):
-    name = CharField(max_length=20, null=False, blank=False, unique=True)
-    name_car_mat = ForeignKey(Product, null=True, blank=False, on_delete=CASCADE)
-    name_accessories = ForeignKey(Accessories, null=True, blank=False, on_delete=CASCADE)
-
-
-class Cart(Model):
-    session_key = CharField(max_length=40, unique=True)
-    created_at = DateTimeField(auto_now_add=True)
-    updated_at = DateTimeField(auto_now=True)
-
-    def total_price(self):
-        return sum(item.total_price() for item in self.cart_items.all())  # Используем related_name cart_items
-
-    def __str__(self):
-        return f"Cart {self.id} for session {self.session_key}"
-
-
-class CartItem(Model):
-    cart = ForeignKey(Cart, related_name='cart_items', on_delete=CASCADE)
-    product = ForeignKey(Product, on_delete=CASCADE)
-    mat_color = ForeignKey(ColorOfMat, on_delete=models.CASCADE, related_name='cart_items')
-    trim_color = ForeignKey(ColorOfTrim, on_delete=models.CASCADE, related_name='cart_items')
-    quantity = PositiveIntegerField(default=1)
-    price = DecimalField(max_digits=10, decimal_places=2)
-
-    def total_price(self):
-        # return self.product.price * self.quantity
-        return self.quantity * self.price
-
-    def __str__(self):
-        return f"{self.product.name} (x{self.quantity}) in cart {self.cart.id}"
-
-
-class PaymentMethod(Model):
-    name = CharField(max_length=50)
-    description = TextField(blank=True, null=True)
+class Category(models.Model):
+    name = models.CharField(max_length=20, unique=True)
 
     def __str__(self):
         return self.name
 
-class Payment(Model):
-    cart = OneToOneField(Cart, on_delete=models.CASCADE)
-    total_price = DecimalField(max_digits=8, decimal_places=2)
-    payment_method = ForeignKey(PaymentMethod, on_delete=models.PROTECT, null=True, blank=True)
-    payment_status = CharField(max_length=40, default='Pending')
-    created_at = DateTimeField(auto_now_add=True)
-    updated_at = DateTimeField(auto_now=True)
 
-
-class ShippingMethod(Model):
-    name = CharField(max_length=50)
-    description = TextField(blank=True, null=True)
+class Subcategory(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='subcategories')
 
     def __str__(self):
         return self.name
 
-class Shipping(Model):
-    cart = OneToOneField(Cart, on_delete=models.CASCADE)
-    address = TextField()
-    city = CharField(max_length=100)
-    postal_code = CharField(max_length=20)
-    country = CharField(max_length=100)
-    telefon = CharField(max_length=20)
-    email = CharField(max_length=60)
-    shipping_method = ForeignKey(ShippingMethod, on_delete=models.PROTECT)
-    shipping_status = CharField(max_length=50, default='Pending')
-    created_at = DateTimeField(auto_now_add=True)
-    updated_at = DateTimeField(auto_now=True)
+
+class Body(models.Model):
+    name = models.CharField(max_length=20, unique=True, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
 
 
-class Order(Model):
-    order_id = AutoField(primary_key=True)
+class ColorOfMat(models.Model):
+    name = models.CharField(max_length=20, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class ColorOfTrim(models.Model):
+    name = models.CharField(max_length=20, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Subsubcategory(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    subcategory = models.ForeignKey(Subcategory, on_delete=models.CASCADE, related_name='subsubcategories')
+    image = models.ImageField(upload_to='subsubcategories/', blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Product(models.Model):
+    name = models.CharField(max_length=60)
+    subsubcategory = models.ForeignKey(Subsubcategory, on_delete=models.CASCADE, related_name='products')
+    year_of_manufacture = models.CharField(max_length=20)
+    body = models.ForeignKey(Body, null=True, blank=True, on_delete=models.CASCADE)
+    code = models.CharField(max_length=20, null=True, blank=True)
+    short_description = models.TextField()
+    description = models.TextField()
+    quantity = models.PositiveIntegerField(default=1)
+    price = models.FloatField(verbose_name=_('Cena'))
+    availability = models.BooleanField(default=False)
+    image = models.ImageField(default='no_image.png', upload_to='products/')
+    mat_color = models.ForeignKey(ColorOfMat, default=1, on_delete=models.CASCADE, related_name='products')
+    trim_color = models.ForeignKey(ColorOfTrim, default=1, on_delete=models.CASCADE, related_name='products')
+
+    def __str__(self):
+        return self.name
+
+class ProductImage(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='product_images/')
+
+class Cart(models.Model):
+    session_key = models.CharField(max_length=100)
+
+    def total_price(self):
+        return sum(item.total_price() for item in self.items.all())
+
+    def __str__(self):
+        return f"Cart {self.id} - {self.session_key}"
+
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, related_name="items", on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+
+    def total_price(self):
+        return self.quantity * self.product.price
+
+    def __str__(self):
+        return f"{self.quantity} of {self.product.name} in Cart {self.cart.id}"
+
+
+class Order(models.Model):
     cart = models.OneToOneField(Cart, on_delete=models.CASCADE)
-    customer_name = CharField(max_length=255)
-    customer_email = EmailField()
-    customer_phone = CharField(max_length=20, default='000 000 000')
-    customer_address = CharField(max_length=255)
-    customer_city = CharField(max_length=100)
-    customer_postal_code = CharField(max_length=20)
-    customer_country = CharField(max_length=100, default='Česká republika')
-    order_date = DateTimeField(auto_now_add=True)
-    total_amount = DecimalField(max_digits=10, decimal_places=2)
-    status = CharField(max_length=50, default='New')
-    created_at = DateTimeField(auto_now_add=True)
+    customer_name = models.CharField(max_length=35)
+    customer_surname = models.CharField(max_length=35)
+    customer_email = models.EmailField()
+    customer_phone = models.CharField(max_length=20, default='+420 000 000 000')
+    customer_address = models.CharField(max_length=255)
+    customer_city = models.CharField(max_length=50)
+    customer_postal_code = models.CharField(max_length=6)
+    customer_country = models.CharField(max_length=100, default='Česká republika')
+    order_date = models.DateTimeField(auto_now_add=True)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    status = models.CharField(max_length=50, default='New')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Order {self.id}"
 
 
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, related_name="items", on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
 
-class OrderItem(Model):
-    order = ForeignKey(Order, related_name='order_items', on_delete=models.CASCADE)
-    product = ForeignKey('Product', on_delete=models.CASCADE)
-    mat_color = CharField(max_length=50)
-    trim_color = CharField(max_length=50)
-    quantity = PositiveIntegerField()
-    price = DecimalField(max_digits=10, decimal_places=2)  # Assuming each item has a price
-
+    def __str__(self):
+        return f"{self.quantity} of {self.product.name} in Order {self.order.id}"
