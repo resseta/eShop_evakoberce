@@ -12,7 +12,7 @@
                 {{ item.product.name }} - {{ item.quantity }} pcs - {{ item.product.price }} each
                 <!-- Odkaz pro návrat k produktu -->
                 <a href="{% url 'product_detail' item.product.id %}">Zpět na produkt</a>
-                <a href="{% url 'remove_from_cart' item.id %}">❌</a> <!-- Ссылка для удаления товаров -->
+                <a href="{% url 'remove_from_cart' item.id %}">❌</a> <!-- Odkaz na odstranění zboží -->
             </li>
         {% endfor %}
         <li>Celkem: {{ cart.total_price }}</li>

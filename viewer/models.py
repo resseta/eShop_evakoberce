@@ -1,5 +1,8 @@
+import os
+
 from django.db import models
 from datetime import datetime
+from uuid import uuid4
 
 from django.template.defaultfilters import default
 from django.utils import timezone
@@ -63,6 +66,11 @@ class Body(Model):
 
     def __str__(self):
         return f"{self.name}"
+
+def upload_to(instance, filename):
+    base, ext = os.path.splitext(filename)
+    new_filename = f"{base}_{uuid4().hex}{ext}"
+    return os.path.join('products/', new_filename)
 
 
 class Product(Model):
@@ -128,6 +136,9 @@ class Cart(Model):
 
     def total_price(self):
         return sum(item.total_price() for item in self.cart_items.all())  # Используем related_name cart_items
+
+    def total_amount(self):
+        return sum(item.quantity for item in self.cart_items.all())
 
     def __str__(self):
         return f"Cart {self.id} for session {self.session_key}"
@@ -201,7 +212,8 @@ class Order(Model):
     status = CharField(max_length=50, default='New')
     created_at = DateTimeField(auto_now_add=True)
 
-
+    def __str__(self):
+        return f"Order {self.order_id} - {self.customer_name}"
 
 class OrderItem(Model):
     order = ForeignKey(Order, related_name='order_items', on_delete=models.CASCADE)
@@ -210,4 +222,7 @@ class OrderItem(Model):
     trim_color = CharField(max_length=50)
     quantity = PositiveIntegerField()
     price = DecimalField(max_digits=10, decimal_places=2)  # Assuming each item has a price
+
+    def __str__(self):
+        return f"{self.quantity} x {self.product.name} for Order {self.order.id}"
 

@@ -3,10 +3,10 @@
 {% block content %}
 <h2>Checkout</h2>
 
-    <form method="POST" action="{% url 'create_order' %}">
+    <form method="POST">
     {% csrf_token %}
 
-        <!-- Информация о клиенте -->
+        <!-- Informace o klientovi -->
     <h3>Informace o zákazníkovi</h3>
     <label for="customer_name">Name:</label>
     <input type="text" id="customer_name" name="customer_name" required /><br/>

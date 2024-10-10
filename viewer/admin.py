@@ -10,12 +10,15 @@ class ProductImageInline(admin.TabularInline):
 class ProductAdmin(admin.ModelAdmin):
     inlines = [ProductImageInline]
 
-
+class OrderItemInline(admin.TabularInline):
+    model = OrderItem
+    extra = 1
 
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('order_id', 'customer_name', 'order_date', 'total_amount', 'status')
     search_fields = ('customer_name', 'customer_email', 'order_id')
     list_filter = ('status', 'order_date')
+    inlines = [OrderItemInline]
 
 
 admin.site.register(ColorOfTrim)
@@ -37,5 +40,6 @@ admin.site.register(Shipping)
 admin.site.register(Cart)
 admin.site.register(CartItem)
 admin.site.register(Order, OrderAdmin)
+admin.site.register(OrderItem)
 
 

@@ -9,7 +9,7 @@ import logging
 
 from .models import Product, Cart, CartItem, ColorOfMat, ColorOfTrim, Payment, Shipping, PaymentMethod, ShippingMethod, \
     OrderItem
-from .forms import AddToCartForm
+from .forms import AddToCartForm, ProductForm
 from django.contrib import messages
 from django.utils.translation import get_language
 
@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 def home(request):
     products = Product.objects.all()
-    # cart = None
+    cart = None
     # if request.session.session_key:
     #     cart = Cart.objects.get(session_key=request.session.session_key)
 
@@ -101,10 +101,10 @@ def add_to_cart(request, product_id):
     if request.method == 'POST':
         form = AddToCartForm(request.POST)
         if form.is_valid():
-            # Получаем или создаем корзину
+            # Získáme nebo vytvoříme košík
             cart, created = Cart.objects.get_or_create(session_key=request.session.session_key)
 
-            # Создаем элемент в корзину с указанием цены
+            # Vložíme položku do košíku s uvedením ceny
             CartItem.objects.create(
                 cart=cart,
                 product=product,
@@ -143,6 +143,7 @@ def checkout(request):
     cart = Cart.objects.get(session_key=request.session.session_key)
 
     if request.method == 'POST':
+        print('Post')
         payment_method = PaymentMethod.objects.get(id=request.POST['payment_method'])
         shipping_method = ShippingMethod.objects.get(id=request.POST['shipping_method'])
 
@@ -182,8 +183,15 @@ def checkout(request):
             shipping.shipping_method = shipping_method
             shipping.save()
 
-        messages.success(request, 'Your order has been processed successfully!')
-        return redirect('success_view')
+
+        order=Order.objects.create(cart=cart,
+                                   # customer_name=customer_name,
+                                   # customer_email=customer_email,
+                                   # customer_phone=customer_phone,
+                                   total_amount=cart.total_price()
+                                   )
+        messages.success(request, 'Vaše objednávka byla úspěšně zpracována!')
+        return redirect('success', order_id=order.order_id)
 
     payment_methods = PaymentMethod.objects.all()
     shipping_methods = ShippingMethod.objects.all()
@@ -195,31 +203,18 @@ def checkout(request):
     })
 
 # Обновить success_view
-def success_view(request):
-    order_id = request.session.get('order_id')
-    logger.info(f"Order ID retrieved from session: {order_id}")
-
-    if not order_id:
-        messages.error(request, 'Order ID not found in session. Please try again.')
-        return redirect('checkout')
-
+def success_view(request, order_id):
+    # Получение заказа по order_id
     order = get_object_or_404(Order, order_id=order_id)
-    logger.info(f"Order retrieved from database: {order}")
-
-    context = {
-        'order': order,
-        'LANGUAGE_CODE': get_language(),
-    }
-
-    return render(request, 'success.html', context)
-
+    # Передача заказа в шаблон
+    return render(request, 'success.html', {'order': order})
 
 def remove_from_cart(request, item_id):
     cart_item = get_object_or_404(CartItem, id=item_id)
     cart_item.delete()
     return redirect('view_cart')
 
-# Обновить create_order
+# Obnovit create_order
 def create_order(request):
     if request.method == 'POST':
         session_key = request.session.session_key
@@ -230,7 +225,7 @@ def create_order(request):
         cart = Cart.objects.filter(session_key=session_key).first()
         if not cart:
             messages.error(request,
-                           'Ваша корзина пуста. Пожалуйста, добавьте товары в корзину перед тем, как оформить заказ.')
+                           'Váš koš je prázdný. Před zadáním objednávky přidejte zboží do košíku.')
             return redirect('cart_empty')
 
         cart_items = CartItem.objects.filter(cart=cart)
@@ -246,7 +241,6 @@ def create_order(request):
         if not all(
                 [customer_name, customer_email, customer_phone, customer_address, customer_city, customer_postal_code,
                  customer_country]):
-            logger.error("Form data missing required fields.")
             return redirect('checkout')
 
         with transaction.atomic():
@@ -263,8 +257,6 @@ def create_order(request):
                 status='New'
             )
 
-            logger.info(f"Order created: {order.order_id}")
-
             for cart_item in cart_items:
                 OrderItem.objects.create(
                     order=order,
@@ -277,19 +269,29 @@ def create_order(request):
 
             cart.delete()
 
-        request.session['order_id'] = order.order_id
-        logger.info(f"Order ID saved in session: {order.order_id}")
+        # request.session['order_id'] = order.order_id
 
-        messages.success(request, 'Ваш заказ успешно обработан!')
-        logger.info(f"Order saved successfully: {order.order_id}")
+        messages.success(request, 'Vaše objednávka byla úspěšně zpracována!')
 
-        return redirect('success')
+        return redirect('success', order_id=order.order_id)
 
     return redirect('checkout')
 
+#
+# def place_order(request):
+#     return redirect('create_order')
 
-def place_order(request):
-    return redirect('create_order')
+def upload_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            product = form.save()
+            saved_filename = product.image.name
+            print(saved_filename)
+            return redirect('success_url')
+    else:
+        form = ProductForm()
+    return render(request, 'upload.html', {'form': form})
 
 def error_view(request):
     return render(request, 'error.html')
