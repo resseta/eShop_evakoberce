@@ -43,10 +43,9 @@ urlpatterns = [
     path('error/', views.error_view, name='error_view'),
     path('checkout/', views.checkout, name='checkout'),
     path('create_order/', views.create_order, name='create_order'),
-    # path('success/', views.success_view, name='success'),
     path('success/<int:order_id>/', views.success_view, name='success'),
 
-]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

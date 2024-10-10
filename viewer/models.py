@@ -199,7 +199,7 @@ class Shipping(Model):
 
 class Order(Model):
     order_id = AutoField(primary_key=True)
-    cart = models.OneToOneField(Cart, on_delete=models.CASCADE)
+    cart = ForeignKey('Cart', on_delete=models.SET_NULL, null=True, blank=True)
     customer_name = CharField(max_length=255)
     customer_email = EmailField()
     customer_phone = CharField(max_length=20, default='000 000 000')

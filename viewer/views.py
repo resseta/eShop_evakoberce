@@ -267,7 +267,9 @@ def create_order(request):
                     trim_color=cart_item.trim_color
                 )
 
+            CartItem.objects.filter(cart=cart).delete()
             cart.delete()
+
 
         # request.session['order_id'] = order.order_id
 
@@ -277,9 +279,6 @@ def create_order(request):
 
     return redirect('checkout')
 
-#
-# def place_order(request):
-#     return redirect('create_order')
 
 def upload_product(request):
     if request.method == 'POST':
