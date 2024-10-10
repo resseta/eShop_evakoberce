@@ -20,6 +20,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import RedirectView
 
+from accounts.views import SignUpView, user_logout
 from viewer import views
 from viewer.views import home, AccessoriesListView, accessories
 
@@ -44,7 +45,9 @@ urlpatterns = [
     path('error/', views.error_view, name='error_view'),
     path('checkout/', views.checkout, name='checkout'),
 
-    path('accounts/signup/', SignUpView.as_view(), name='signup')
+    path('accounts/signup/', SignUpView.as_view(), name='signup'),
+    path('accounts/logout/', user_logout, name='logout'),
+    path('accounts/', include('django.contrib.auth.urls')),
 
 ]
 
