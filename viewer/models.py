@@ -191,7 +191,7 @@ class Shipping(Model):
     country = CharField(max_length=100)
     telefon = CharField(max_length=20)
     email = CharField(max_length=60)
-    shipping_method = ForeignKey(ShippingMethod, on_delete=models.PROTECT)
+    shipping_method = ForeignKey(ShippingMethod, on_delete=PROTECT)
     shipping_status = CharField(max_length=50, default='Pending')
     created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)
@@ -200,7 +200,7 @@ class Shipping(Model):
 class Order(Model):
     order_id = AutoField(primary_key=True)
     cart = ForeignKey('Cart', on_delete=models.SET_NULL, null=True, blank=True)
-    customer_name = CharField(max_length=255)
+    customer_name = CharField(max_length=85)
     customer_email = EmailField()
     customer_phone = CharField(max_length=20, default='000 000 000')
     customer_address = CharField(max_length=255)
@@ -209,8 +209,15 @@ class Order(Model):
     customer_country = CharField(max_length=100, default='Česká republika')
     order_date = DateTimeField(auto_now_add=True)
     total_amount = DecimalField(max_digits=10, decimal_places=2)
-    status = CharField(max_length=50, default='New')
+    status = CharField(max_length=30,
+                              choices=(('New', 'New'), ('Processing', 'Processing'), ('Completed', 'Completed')))
     created_at = DateTimeField(auto_now_add=True)
+    payment_method = CharField(max_length=50, null=True, blank=True)
+    shipping_method = CharField(max_length=50, null=True, blank=True)
+
+    def __init__(self, *args, **kwargs):
+        super(Order, self).__init__(*args, **kwargs)
+        self.id = self.order_id  # Ссылка id на order_id
 
     def __str__(self):
         return f"Order {self.order_id} - {self.customer_name}"

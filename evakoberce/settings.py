@@ -146,17 +146,22 @@ LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
-        'file': {
+        'console': {
             'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': 'debug.log',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+            # Убираем 'encoding'
+            # 'encoding': 'utf-8',
         },
     },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
+    'formatters': {
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
         },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
     },
 }

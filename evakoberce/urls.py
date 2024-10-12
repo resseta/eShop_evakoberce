@@ -38,11 +38,10 @@ urlpatterns = [
     path('add-to-cart/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
     path('cart/', views.view_cart, name='view_cart'),
     path('cart/remove/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
-
+    path('cart_empty/', views.cart_empty_view, name='cart_empty'),
 
     path('error/', views.error_view, name='error_view'),
     path('checkout/', views.checkout, name='checkout'),
-    path('create_order/', views.create_order, name='create_order'),
     path('success/<int:order_id>/', views.success_view, name='success'),
 
 ]

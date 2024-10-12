@@ -1,29 +1,37 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <body>
-        <h2>Vaše objednávka je potvrzena!</h2>
-        <div>
-            {% if order %}
-                <p><strong>Order ID:</strong> {{ order.order_id }}</p>
-                <p><strong>Customer Name:</strong> {{ order.customer_name }}</p>
-                <p><strong>Customer Email:</strong> {{ order.customer_email }}</p>
-                <p><strong>Customer Phone:</strong> {{ order.customer_phone }}</p>
-                <p><strong>Total Amount:</strong> {{ order.total_amount }}</p>
+<head>
+    <meta charset="UTF-8">
+    <title>Order Success</title>
+</head>
+<body>
+    <h2>Vaše objednávka je potvrzena!</h2>
+    <p><strong>Order ID:</strong> {{ order.order_id }}</p>
+    <p><strong>Customer Name:</strong> {{ order.customer_name }}</p>
+    <p><strong>Total Amount:</strong> {{ order.total_amount }}</p>
 
-                <h2>Položky objednávky:</h2>
-                <p><strong>Item:</strong> {{ product.name }}</p>
+    <h2>Položky objednávky:</h2>
+    {% for item in order_items %}
+    <p>
+        <strong>Item:</strong> {{ item.product.name }} - Quantity: {{ item.quantity }}<br>
+        <strong>Материал:</strong> {{ item.mat_color }}<br>
+        <strong>Окантовка:</strong> {{ item.trim_color }}
+    </p>
+    {% endfor %}
 
-<!--                <ul>-->
-<!--                    {% for item in order.order_items.all %}-->
-<!--                        <li>{{ item.product.name }} - {{ item.quantity }} x {{ item.price }} - Mat Color: {{ item.mat_color }} - Trim Color: {{ item.trim_color }}</li>-->
-<!--                    {% empty %}-->
-<!--                        <li>No items in order.</li>-->
-<!--                    {% endfor %}-->
-<!--                </ul>-->
-            {% else %}
-                <p>No order found.</p>
-            {% endif %}
-        </div>
-    </body>
+    <h2>Payment Information:</h2>
+    {% if payment %}
+    <p><strong>Payment Method:</strong> {{ payment.payment_method.name }}</p>
+    {% else %}
+    <p>Payment information is not available.</p>
+    {% endif %}
+
+    <h2>Shipping Information:</h2>
+    {% if shipping %}
+    <p><strong>Shipping Method:</strong> {{ shipping.shipping_method.name }}</p>
+    {% else %}
+    <p>Shipping information is not available.</p>
+    {% endif %}
+</body>
 {% endblock %}

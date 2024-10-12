@@ -20,6 +20,12 @@ class OrderAdmin(admin.ModelAdmin):
     list_filter = ('status', 'order_date')
     inlines = [OrderItemInline]
 
+    def get_order_id(self, obj):
+        return obj.order_id
+
+    get_order_id.admin_order_field = 'order_id'  # Сортировка по этому полю
+    get_order_id.short_description = 'Order ID'
+
 
 admin.site.register(ColorOfTrim)
 admin.site.register(ColorOfMat)

@@ -6,7 +6,7 @@
     <title>Modely {{ category.name }}</title>
 </head>
 <body>
-    <h1>Vyberte svůj model auta značky {{ category.name }}</h1>
+    <h2>Vyberte svůj model auta značky {{ category.name }}</h2>
         <ul>
             {% for subcategory in subcategories %}
                 <a href="{% url 'product_list' subcategory.id %}" class="btn btn-outline-danger"  role="button"  style="width: 220px;">{{ subcategory.name }}</a>
@@ -15,5 +15,4 @@
     <br>
     <a href="{% url 'category_list' %}">Zpět na výběr značky auta</a>
 </body>
-</html>
 {% endblock %}
