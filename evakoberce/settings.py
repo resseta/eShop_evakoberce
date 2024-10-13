@@ -142,6 +142,15 @@ LOGOUT_REDIRECT_URL = 'home'
 MEDIA_URL = '/media/'  # URL that handles the media served from MEDIA_ROOT
 MEDIA_ROOT = BASE_DIR / 'media'  # Absolute filesystem path to the directory that will hold user-uploaded files
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'evakoberce@gmail.com'
+EMAIL_HOST_PASSWORD = 'bepw ozor flli uhlo'
+
+DEFAULT_FROM_EMAIL = 'evakoberce@gmail.com'
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

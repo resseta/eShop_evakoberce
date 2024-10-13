@@ -15,6 +15,8 @@ from django.utils.translation import get_language
 
 from viewer.models import Accessories, Category, Subcategory, Product, Order
 
+from .sendmail import send_order_confirmation_email
+
 logger = logging.getLogger(__name__)
 
 # Create your views here.
@@ -177,8 +179,6 @@ def checkout(request):
                     payment.payment_method = payment_method
                     payment.save()
 
-                print(f"Payment created: {payment}, Payment method: {payment.payment_method}")
-
                 shipping, created = Shipping.objects.get_or_create(
                     cart=cart,
                     defaults={
@@ -191,7 +191,7 @@ def checkout(request):
                         'shipping_method': shipping_method
                     }
                 )
-                print(f"Shipping created: {shipping}, Shipping method: {shipping.shipping_method}")
+
                 if not created:
                     shipping.address = request.POST['address']
                     shipping.city = request.POST['city']
@@ -201,8 +201,6 @@ def checkout(request):
                     shipping.email = request.POST['email']
                     shipping.shipping_method = shipping_method
                     shipping.save()
-
-                print(f"Shipping created: {shipping}, Shipping method: {shipping.shipping_method}")
 
                 customer_name = request.POST.get('customer_name')
                 customer_email = request.POST.get('customer_email')
@@ -250,6 +248,9 @@ def checkout(request):
 
                 CartItem.objects.filter(cart=cart).delete()
                 cart.delete()
+
+                # Odeslání e-mailu potvrzení objednávky.
+                send_order_confirmation_email(order)
 
                 messages.success(request, 'Vaše objednávka byla úspěšně zpracována!')
                 return redirect('success', order_id=order.order_id)

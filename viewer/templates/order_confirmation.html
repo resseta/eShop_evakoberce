@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Potvrzení objednávky</title>
+</head>
+<body>
+    <h2>Děkujeme za Vaši objednávku {{ order.customer_name }}!</h2>
+    <p>Číslo objednávky: {{ order.order_id }}</p>
+    <p>Celková částka: {{ order.total_amount }}</p>
+
+    <h3>Informace o dopravě</h3>
+    <p>{{ order.customer_address }}, {{ order.customer_city }}, {{ order.customer_postal_code }}, {{ order.customer_country }}</p>
+
+    <h3>Způsob platby</h3>
+    <p>{{ order.payment_method }}</p>
+
+    <h3>Způsob dopravy::</h3>
+    <p>{{ order.shipping_method }}</p>
+
+    <h3>Položky objednávky:</h3>
+    <ul>
+        {% for item in order.order_items.all %}
+        <li>{{ item.product.name }} - {{ item.quantity }} x {{ item.price }}</li>
+        {% endfor %}
+    </ul>
+
+    <p>Máte-li jakékoli dotazy, kontaktujte nás na adrese: evakoberce@gmail.com</p>
+</body>
+</html>
