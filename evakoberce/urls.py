@@ -22,6 +22,7 @@ from django.views.generic.base import RedirectView
 
 from viewer import views
 from viewer.views import home, AccessoriesListView, accessories
+from accounts.views import SignUpView, user_logout
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -43,6 +44,10 @@ urlpatterns = [
     path('error/', views.error_view, name='error_view'),
     path('checkout/', views.checkout, name='checkout'),
     path('success/<int:order_id>/', views.success_view, name='success'),
+
+    path('accounts/signup/', SignUpView.as_view(), name='signup'),
+    path('accounts/logout/', user_logout, name='logout'),
+    path('accounts/', include('django.contrib.auth.urls')),
 
 ]
 
