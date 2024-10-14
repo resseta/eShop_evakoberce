@@ -28,37 +28,33 @@
 <body>
     <header class="header">
         <div class="container">
-            <a href="" class="logo">
-                <img src="" alt="Lorem" class="logo-img">
-            </a>
-            <nav class="nav">
-                <ul class="nav-list">
-                    <li class="nav-list-item">
-                        <a href="">Vyhleddavání</a>
-                    </li>
-                    <li class="nav-list-item">
-                        <a href="{% url 'view_cart' %}">Cart ({{ cart.cartitem_set.count }} items)</a>
-                    </li>
-                </ul>
-            </nav>
+            <p style="text-align: center; color: white; background:#D80032;">Obchod funguje v testovacím režimu</p>
+            <div style="display: flex; justify-content: space-between;">
+                <a href="" class="logo">
+                    <img src="/media/logo_main.png" alt="" width="150px">
+                </a>
+                <a href=""><span style="color: #D80032">Vyhledavání</span></a>
+                <a href="{% url 'view_cart' %}"><span style="color: #D80032">Košík 🛒({{ cart.cartitem_set.count }})</span></a>
+            </div>
         </div>
+        </br>
     </header>
 </body>
-<body>
-    {% if messages %}
-        <ul>
-        {% for message in messages %}
-            <li class="{{ message.tags }}">{{ message }}</li>
-        {% endfor %}
-        </ul>
-    {% endif %}
-</body>
+<!--<body>-->
+<!--    {% if messages %}-->
+<!--        <ul>-->
+<!--        {% for message in messages %}-->
+<!--            <li class="{{ message.tags }}">{{ message }}</li>-->
+<!--        {% endfor %}-->
+<!--        </ul>-->
+<!--    {% endif %}-->
+<!--</body>-->
 <body>
 
 {% include "navbar.html" %}
 
 <div class="container">
-    <div class="jumbotron">
+    <div class="container">
         {% block content %}{% endblock %}
     </div>
 </div>
