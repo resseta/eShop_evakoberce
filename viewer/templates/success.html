@@ -3,35 +3,35 @@
 {% block content %}
 <head>
     <meta charset="UTF-8">
-    <title>Order Success</title>
+    <title>Potvrzení objednávky</title>
 </head>
 <body>
     <h2>Vaše objednávka je potvrzena!</h2>
-    <p><strong>Order ID:</strong> {{ order.order_id }}</p>
-    <p><strong>Customer Name:</strong> {{ order.customer_name }}</p>
-    <p><strong>Total Amount:</strong> {{ order.total_amount }}</p>
+    <p><strong>Číslo objednávky:</strong> {{ order.order_id }}</p>
+    <p><strong>Jméno:</strong> {{ order.customer_name }}</p>
+    <p><strong>Celková částka:</strong> {{ order.total_amount }}</p>
 
     <h2>Položky objednávky:</h2>
     {% for item in order_items %}
     <p>
-        <strong>Item:</strong> {{ item.product.name }} - Quantity: {{ item.quantity }}<br>
-        <strong>Материал:</strong> {{ item.mat_color }}<br>
-        <strong>Окантовка:</strong> {{ item.trim_color }}
+        <strong>Název:</strong> {{ item.product.name }} - Quantity: {{ item.quantity }}<br>
+        <strong>Barva materiál:u</strong> {{ item.mat_color }}<br>
+        <strong>Barva lemovaní:</strong> {{ item.trim_color }}
     </p>
     {% endfor %}
 
-    <h2>Payment Information:</h2>
-    {% if payment %}
-    <p><strong>Payment Method:</strong> {{ payment.payment_method.name }}</p>
-    {% else %}
-    <p>Payment information is not available.</p>
-    {% endif %}
+<!--    <h2>Payment Information:</h2>-->
+<!--    {% if payment %}-->
+<!--    <p><strong>Payment Method:</strong> {{ payment.payment_method.name }}</p>-->
+<!--    {% else %}-->
+<!--    <p>Payment information is not available.</p>-->
+<!--    {% endif %}-->
 
-    <h2>Shipping Information:</h2>
-    {% if shipping %}
-    <p><strong>Shipping Method:</strong> {{ shipping.shipping_method.name }}</p>
-    {% else %}
-    <p>Shipping information is not available.</p>
-    {% endif %}
+<!--    <h2>Shipping Information:</h2>-->
+<!--    {% if shipping %}-->
+<!--    <p><strong>Shipping Method:</strong> {{ shipping.shipping_method.name }}</p>-->
+<!--    {% else %}-->
+<!--    <p>Shipping information is not available.</p>-->
+<!--    {% endif %}-->
 </body>
 {% endblock %}

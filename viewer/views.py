@@ -21,7 +21,6 @@ logger = logging.getLogger(__name__)
 
 # Create your views here.
 
-
 def home(request):
     products = Product.objects.all()
     cart = None
@@ -57,10 +56,6 @@ def category_list(request):
 def subcategory_list(request, category_id):
     category = get_object_or_404(Category, id=category_id)
     subcategories = category.subcategories.all()
-
-    # Логирование данных для отладки
-    print("Category:", category)
-    print("Subcategories:", subcategories)
     return render(request, 'subcategory_list.html', {'category': category, 'subcategories': subcategories})
 
 
@@ -117,7 +112,7 @@ def add_to_cart(request, product_id):
                 mat_color=form.cleaned_data['mat_color'],
                 trim_color=form.cleaned_data['trim_color'],
                 quantity=form.cleaned_data['quantity'],
-                price=product.price  # Обязательно указываем цену продукта
+                price=product.price  #Nezapomeňte uvést cenu produktu
             )
 
             messages.success(request, 'Product was successfully added to the cart!')
@@ -212,7 +207,7 @@ def checkout(request):
 
                 if not all([customer_name, customer_email, customer_phone, customer_address, customer_city,
                             customer_postal_code, customer_country]):
-                    messages.error(request, 'Все поля обязательны для заполнения.')
+                    messages.error(request, 'Všechna pole jsou povinná.')
                     return redirect('checkout')
 
                 order = Order.objects.create(
@@ -230,7 +225,7 @@ def checkout(request):
                     shipping_method=shipping_method.name
                 )
 
-                # Связать Payment и Shipping с заказом
+                # Propojit Payment a Shipping s objednávkou
                 payment.cart = cart
                 payment.save()
                 shipping.cart = cart
@@ -278,26 +273,15 @@ def success_view(request, order_id):
     order = get_object_or_404(Order, order_id=order_id)
     cart = order.cart
 
-    # Найдем связанные объекты Payment и Shipping
-    # try:
-    #     payment = Payment.objects.get(cart=order.cart)
-    # except Payment.DoesNotExist:
-    #     payment = None
-    #
-    # try:
-    #     shipping = Shipping.objects.get(cart=order.cart)
-    # except Shipping.DoesNotExist:
-    #     shipping = None
-
-    # Получение связанных объектов Payment и Shipping, если они есть
+    # Získání propojených objektů Payment a Shipping, pokud existují
     payment = Payment.objects.filter(cart=order.cart).first()
     shipping = Shipping.objects.filter(cart=order.cart).first()
 
     order_items = OrderItem.objects.filter(order=order)
 
     print(f"Order ID: {order_id}")
-    print(f"Payment: {payment}, Payment Method: {payment.payment_method if payment else None}")
-    print(f"Shipping: {shipping}, Shipping Method: {shipping.shipping_method if shipping else None}")
+    print(f"Payment: {payment}, Způsob platby: {payment.payment_method if payment else None}")
+    print(f"Shipping: {shipping}, Způsob dopravy: {shipping.shipping_method if shipping else None}")
 
     return render(request, 'success.html', {
         'order': order,
