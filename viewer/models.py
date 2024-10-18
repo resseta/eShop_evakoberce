@@ -67,6 +67,7 @@ class Body(Model):
     def __str__(self):
         return f"{self.name}"
 
+
 def upload_to(instance, filename):
     base, ext = os.path.splitext(filename)
     new_filename = f"{base}_{uuid4().hex}{ext}"
@@ -94,6 +95,7 @@ class Product(Model):
 
     def __str__(self):
         return f"{self.name}"
+
 
 class ProductImage(Model):
     product = ForeignKey(Product, related_name='images',
@@ -167,6 +169,7 @@ class PaymentMethod(Model):
     def __str__(self):
         return self.name
 
+
 class Payment(Model):
     cart = OneToOneField(Cart, on_delete=models.CASCADE)
     total_price = DecimalField(max_digits=8, decimal_places=2)
@@ -182,6 +185,7 @@ class ShippingMethod(Model):
 
     def __str__(self):
         return self.name
+
 
 class Shipping(Model):
     cart = OneToOneField(Cart, on_delete=models.CASCADE)
@@ -221,6 +225,7 @@ class Order(Model):
 
     def __str__(self):
         return f"Order {self.order_id} - {self.customer_name}"
+
 
 class OrderItem(Model):
     order = ForeignKey(Order, related_name='order_items', on_delete=models.CASCADE)

@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from viewer.models import *
 
+
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
     extra = 1  # Number of extra forms for adding images
@@ -10,9 +11,11 @@ class ProductImageInline(admin.TabularInline):
 class ProductAdmin(admin.ModelAdmin):
     inlines = [ProductImageInline]
 
+
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
     extra = 1
+
 
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('order_id', 'customer_name', 'order_date', 'total_amount', 'status')

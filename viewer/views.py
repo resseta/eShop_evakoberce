@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 # Create your views here.
 
+
 def home(request):
     products = Product.objects.all()
     cart = None
@@ -96,6 +97,7 @@ def product_detail(request, id):
     }
     return render(request, 'product_detail.html', context)
 
+
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
 
@@ -127,6 +129,7 @@ def add_to_cart(request, product_id):
     }
     return render(request, 'product_detail.html', context)
 
+
 def view_cart(request):
     if not request.session.session_key:
         request.session.create()
@@ -138,6 +141,7 @@ def view_cart(request):
 
     context = {'cart': cart}
     return render(request, 'cart.html', context)
+
 
 def cart_empty_view(request):
     return render(request, 'cart_empty.html')
@@ -308,6 +312,7 @@ def upload_product(request):
     else:
         form = ProductForm()
     return render(request, 'upload.html', {'form': form})
+
 
 def error_view(request):
     return render(request, 'error.html')
