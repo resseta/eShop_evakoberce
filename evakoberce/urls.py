@@ -24,6 +24,7 @@ from viewer import views
 from viewer.views import home, AccessoriesListView, accessories, add_to_cart, view_cart
 from accounts.views import SignUpView, user_logout
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 
@@ -49,5 +50,6 @@ urlpatterns = [
     path('accounts/signup/', SignUpView.as_view(), name='signup'),
     path('accounts/logout/', user_logout, name='logout'),
     path('accounts/', include('django.contrib.auth.urls')),
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
