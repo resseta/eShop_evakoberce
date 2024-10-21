@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+ {% extends "base.html" %}
 
 {% block content %}
 <h1>Vítejte v internetovém obchodě EVA koberce.</h1>
@@ -8,20 +8,20 @@
     <h2>{{ product.name }}</h2>
     <p>{{ product.description }}</p>
     <p>Price: {{ product.price }}</p>
-    <a href="{% url 'product_detail' product.id %}">View Product</a>
+    <a href="{% url 'product_detail' product.id %}">Zobrazit Produkt</a>
 {% endfor %}
 
 <!-- Display Cart -->
-{% if cart %}
-    <h2>Your Cart</h2>
-    <ul>
-        {% for item in cart.cartitem_set.all %}
-            <li>{{ item.product.name }} - {{ item.quantity }} pcs - {{ item.product.price }} each</li>
-        {% endfor %}
-        <li>Total: {{ cart.total_price }}</li>
-    </ul>
-    <a href="{% url 'view_cart' %}">View Full Cart</a>
-{% else %}
-    <p>Your cart is empty.</p>
+<!--{% if cart %}-->
+<!--    <h2>Your Cart</h2>-->
+<!--    <ul>-->
+<!--        {% for item in cart.cartitem_set.all %}-->
+<!--            <li>{{ item.product.name }} - {{ item.quantity }} ks * {{ item.product.price }}</li>-->
+<!--        {% endfor %}-->
+<!--        <li>Total: {{ cart.total_price }}</li>-->
+<!--    </ul>-->
+<!--    <a href="{% url 'view_cart' %}">Zobrazit Košík</a>-->
+<!--{% else %}-->
+<!--    <p>Váš košík je prázdný.</p>-->
 {% endif %}
 {% endblock %}

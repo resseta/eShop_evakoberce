@@ -3,15 +3,15 @@ from venv import logger
 from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView, DetailView, TemplateView
+from django.views.generic import ListView
 from django.utils.translation import get_language
 import logging
+from django.db.models import Sum
 
 from .models import Product, Cart, CartItem, ColorOfMat, ColorOfTrim, Payment, Shipping, PaymentMethod, ShippingMethod, \
     OrderItem
 from .forms import AddToCartForm, ProductForm
 from django.contrib import messages
-from django.utils.translation import get_language
 
 from viewer.models import Accessories, Category, Subcategory, Product, Order
 
@@ -114,18 +114,20 @@ def add_to_cart(request, product_id):
                 mat_color=form.cleaned_data['mat_color'],
                 trim_color=form.cleaned_data['trim_color'],
                 quantity=form.cleaned_data['quantity'],
-                price=product.price  #Nezapomeňte uvést cenu produktu
+                price=product.price
             )
 
-            messages.success(request, 'Product was successfully added to the cart!')
-            return redirect('home')  # Přesměrování na hlavní stránku
+            messages.success(request, 'Produkt byl úspěšně přidán do košíku!')
+            return redirect('view_cart')  # Přesměrování do Košíku
 
     else:
         form = AddToCartForm(initial={'product_id': product.id})
 
     context = {
         'product': product,
-        'form': form
+        'form': form,
+        'cartitem_quantity': CartItem.objects.filter(cart__session_key=request.session.session_key).aggregate(
+            total_quantity=Sum('quantity'))['total_quantity'] or 0
     }
     return render(request, 'product_detail.html', context)
 
@@ -134,12 +136,19 @@ def view_cart(request):
     if not request.session.session_key:
         request.session.create()
 
+    total_quantity = 0  # Inicializace proměnné total_quantity
+
     try:
         cart = Cart.objects.get(session_key=request.session.session_key)
+        total_quantity = CartItem.objects.filter(cart=cart).aggregate(total_quantity=Sum('quantity'))[
+                             'total_quantity'] or 0
     except Cart.DoesNotExist:
         cart = None
 
-    context = {'cart': cart}
+    context = {
+        'cart': cart,
+        'cartitem_quantity': total_quantity,
+    }
     return render(request, 'cart.html', context)
 
 
@@ -283,10 +292,6 @@ def success_view(request, order_id):
 
     order_items = OrderItem.objects.filter(order=order)
 
-    print(f"Order ID: {order_id}")
-    print(f"Payment: {payment}, Způsob platby: {payment.payment_method if payment else None}")
-    print(f"Shipping: {shipping}, Způsob dopravy: {shipping.shipping_method if shipping else None}")
-
     return render(request, 'success.html', {
         'order': order,
         'payment': payment,
@@ -307,7 +312,6 @@ def upload_product(request):
         if form.is_valid():
             product = form.save()
             saved_filename = product.image.name
-            print(saved_filename)
             return redirect('success_url')
     else:
         form = ProductForm()

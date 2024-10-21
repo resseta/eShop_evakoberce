@@ -34,21 +34,21 @@
                     <img src="/media/logo_main.png" alt="" width="150px">
                 </a>
                 <a href=""><span style="color: #D80032">Vyhledavání</span></a>
-                <a href="{% url 'view_cart' %}"><span style="color: #D80032">Košík 🛒({{ cart.cartitem_set.count }})</span></a>
+                <a href="{% url 'view_cart' %}"><span style="color: #D80032">Košík 🛒({{ cartitem_quantity }})</span></a>
             </div>
         </div>
         </br>
     </header>
 </body>
-<!--<body>-->
-<!--    {% if messages %}-->
-<!--        <ul>-->
-<!--        {% for message in messages %}-->
-<!--            <li class="{{ message.tags }}">{{ message }}</li>-->
-<!--        {% endfor %}-->
-<!--        </ul>-->
-<!--    {% endif %}-->
-<!--</body>-->
+<body>
+    {% if messages %}
+        <ul>
+        {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+</body>
 <body>
 
 {% include "navbar.html" %}

@@ -14,7 +14,7 @@
     <h2>Položky objednávky:</h2>
     {% for item in order_items %}
     <p>
-        <strong>Název:</strong> {{ item.product.name }} - Quantity: {{ item.quantity }}<br>
+        <strong>Název:</strong> {{ item.product.name }} - Množství: {{ item.quantity }}<br>
         <strong>Barva materiál:u</strong> {{ item.mat_color }}<br>
         <strong>Barva lemovaní:</strong> {{ item.trim_color }}
     </p>

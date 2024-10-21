@@ -18,10 +18,10 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic.base import RedirectView
+from django.views.generic import TemplateView
 
 from viewer import views
-from viewer.views import home, AccessoriesListView, accessories
+from viewer.views import home, AccessoriesListView, accessories, add_to_cart, view_cart
 from accounts.views import SignUpView, user_logout
 
 urlpatterns = [
@@ -31,6 +31,7 @@ urlpatterns = [
 
     path('accessories/', AccessoriesListView.as_view(), name="accessories"),
     path('accessories/<pk>/', accessories, name='accesories'),
+    path('kontakt/', TemplateView.as_view(template_name="kontakt.html"), name='kontakt'),
 
     path('categories/', views.category_list, name='category_list'),
     path('categories/<int:category_id>/', views.subcategory_list, name='subcategory_list'),
@@ -49,7 +50,4 @@ urlpatterns = [
     path('accounts/logout/', user_logout, name='logout'),
     path('accounts/', include('django.contrib.auth.urls')),
 
-]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -9,7 +9,7 @@
 <ul>
     {% for item in cart.cart_items.all %}
     <li>
-        {{ item.product.name }} - {{ item.quantity }} pcs - {{ item.product.price }} each
+        {{ item.product.name }} - {{ item.quantity }} ks * {{ item.product.price }}
         <!-- Odkaz pro návrat k produktu -->
         <a href="{% url 'product_detail' item.product.id %}">Zpět na produkt | </a>
         <a href="{% url 'remove_from_cart' item.id %}"> <span style="color: red">🗑️ smazat</span></a>

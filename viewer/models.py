@@ -237,4 +237,3 @@ class OrderItem(Model):
 
     def __str__(self):
         return f"{self.quantity} x {self.product.name} for Order {self.order.id}"
-
