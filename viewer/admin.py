@@ -26,7 +26,7 @@ class OrderAdmin(admin.ModelAdmin):
     def get_order_id(self, obj):
         return obj.order_id
 
-    get_order_id.admin_order_field = 'order_id'  # Сортировка по этому полю
+    get_order_id.admin_order_field = 'order_id'  # Třídění podle tohoto pole
     get_order_id.short_description = 'Order ID'
 
 

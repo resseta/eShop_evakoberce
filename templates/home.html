@@ -3,12 +3,9 @@
 {% block content %}
 <h1 class="text-center">Vítejte v internetovém obchodě EVA koberce</h1>
 
-{% include "slider.html" %}
-
-<!--<div class="image-container">-->
-<!--&lt;!&ndash;        <img src="/media/slider/banner_L1.jpeg" alt="" width="1100px">&ndash;&gt;-->
-<!--        <p style="text-align: center; color: #ef233c; font-size: 48px; background-image: url(/media/slider/banner_L1.jpeg)"></br><strong>Inovativní materiály </br> nový vzhled interiéru</strong></br> ● ● ●</p>-->
-<!--</div>-->
+<div class="slider-wrapper">
+    {% include "slider.html" %}
+</div>
 
 <div class="container">
 <!--    <p style="text-align: center; color: #D80032; font-size: 36px; background:#edf2f4"><strong>Hlavní vlastnosti autokoberců EVA</strong></p>-->
@@ -16,7 +13,8 @@
         <img src="/media/banner_31.png" width="auto">
     </a>
 </div>
+<hr>
 
 {% include "brands_home.html" %}
-
+<hr>
 {% endblock %}

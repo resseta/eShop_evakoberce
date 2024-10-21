@@ -99,7 +99,7 @@ class Product(Model):
 
 class ProductImage(Model):
     product = ForeignKey(Product, related_name='images',
-                                on_delete=CASCADE)  # Establish one-to-many relationship
+                                on_delete=CASCADE)  # Nastavuje one-to-many relationship
     image = ImageField(upload_to='products/')
 
     def __str__(self):
@@ -137,7 +137,7 @@ class Cart(Model):
     updated_at = DateTimeField(auto_now=True)
 
     def total_price(self):
-        return sum(item.total_price() for item in self.cart_items.all())  # Используем related_name cart_items
+        return sum(item.total_price() for item in self.cart_items.all())  # Použijeme related_name cart_items
 
     def total_amount(self):
         return sum(item.quantity for item in self.cart_items.all())
@@ -221,7 +221,7 @@ class Order(Model):
 
     def __init__(self, *args, **kwargs):
         super(Order, self).__init__(*args, **kwargs)
-        self.id = self.order_id  # Ссылка id на order_id
+        self.id = self.order_id  # Odkaz id na order_id
 
     def __str__(self):
         return f"Order {self.order_id} - {self.customer_name}"
@@ -233,7 +233,7 @@ class OrderItem(Model):
     mat_color = CharField(max_length=50)
     trim_color = CharField(max_length=50)
     quantity = PositiveIntegerField()
-    price = DecimalField(max_digits=10, decimal_places=2)  # Assuming each item has a price
+    price = DecimalField(max_digits=10, decimal_places=2)  # Předpokladame, že každá položka má cenu
 
     def __str__(self):
         return f"{self.quantity} x {self.product.name} for Order {self.order.id}"

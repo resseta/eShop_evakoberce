@@ -1,0 +1,149 @@
+/* Obecné styly pro stránku */
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* Styly pro navbar */
+.navbar-container {
+    max-width: 1200px;  /* Omezení šířky */
+    margin: 0 auto;     /* Zarovnání bloku uprostřed */
+    background-color: #343a40; /* Pozadí nav kontejneru */
+}
+
+.navbar {
+    background-color: transparent !important; /* Transparentní pozadí pro hlavní navbar */
+}
+
+/* Styly pro image-container a slider-container */
+
+.slider-wrapper {
+    display: flex;
+    justify-content: center; /* Vycentrování obsahu */
+    max-width: 1200px;
+    width: 100%;  /* Šířka kontejneru */
+    background: #fff; /* Další pozadí, pokud je to nutné */
+    padding: 20px 0; /* Vnitřní odsazení, pokud je to nutné */
+    margin: 0 auto; /* Vycentrování kontejneru */
+}
+
+.image-container {
+    max-width: 1400px;
+    width: 100%;
+    display: flex;
+    justify-content: center; /* Horizontální vyrovnávání obsahu */
+    padding: 20px; /* Vnitřní odsazení pro image-container */
+}
+
+.slider-container {
+    max-width: 1400px;  /* Omezení šířky */
+    width: 100%;  /* Adaptivní šířka od 0 do max-width */
+    margin: 0 auto;  /* Vycentrování kontejneru */
+    text-align: center; /* Vycentrování textu*/
+    overflow: hidden;    /* Aby se zabránilo přetečení */
+}
+
+.slider-container p {
+    margin: 0; /* Odstranění zarážek */
+    color: #ef233c; /* Barva textu */
+    font-size: 48px; /* Velikost písma */
+    background-image: url(/media/slider/banner_L1.jpeg); /* Background image */
+    background-size: cover; /* Obal pozadí, aby pokrýval celý prvek */
+    background-position: center; /* Vycentrování obrázku na pozadí */
+    padding: 20px; /* Vnitřní odsazení pro odstavec */
+}
+
+/* Styly pro header */
+.header-container {
+    max-width: 1200px; /* Omezení šířky */
+    margin: 0 auto; /* Zarovnání bloku uprostřed */
+}
+
+header.header {
+    color: white;
+    padding: 0; /* Odstraňujeme padding od mateřského header */
+    text-align: center;
+}
+
+header.header .top-message {
+    background: #D80032; /* Červené pozadí pro zprávu */
+    padding: 5px; /* Vnitřní odsazení pro zprávu */
+    color: white; /* Barva textu */
+    height: 35px;
+}
+
+header.header .container {
+    background: white; /* Bílé pozadí pro hlavní blok */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0;
+    text-align: center;
+}
+
+header.header .container .links {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 40px;
+}
+
+header.header .container .links a {
+    color: #D80032; /* Barva textu odkazů*/
+    text-decoration: none; /* Odstranit podtržítko */
+    margin: 0 2px; /* Odsazení mezi odkazy */
+}
+
+/* Styly pro footer */
+.footer-bg {
+    background-color: white;  /* Nová barva pozadí */
+}
+
+.footer-container {
+    background-color: #2b2d42;
+    max-width: 1200px;  /* Omezení šířky */
+    margin: 0 auto;     /* Zarovnání bloku uprostřed */
+    padding: 20px;      /* Výška bloku přes vnitřní odsazení */
+    display: flex;
+    justify-content: space-between;  /* Rozdělení objektů na celou šířku */
+    align-items: center;  /* Vertikální zarovnání objektů ve středu*/
+}
+
+footer .container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+footer .container p {
+    flex: 1;
+    text-align: justify;
+    color: #ef233c; /* Barva textu */
+    background-color: #8d99ae; /* Barva pozadí */
+    margin: 0 10px; /* Odsazení mezi bloky */
+    padding: 10px; /* Vnitřní odsazení */
+}
+
+footer .container a {
+    color: white; /* Barva textu odkazů */
+    text-decoration: none; /* Odstranit podtržení odkazů */
+}
+
+.footer-container a {
+    color: white; /* Barva textu odkazů ve footer */
+    text-decoration: none; /* Odstranit podtržítko */
+    display: flex;        /* Dodatečně pro zarovnání */
+    align-items: center;  /* Vertikální zarovnání */
+}
+
+.footer-container a img {
+    margin-right: 5px; /* vzdálenost mezi obrázkem a textem */
+}
+
+footer .container .social-icon img {
+    margin: 0 5px; /* Odsazení mezi ikonami sociálních sítí */
+}
+
+/*footer img[src="/media/copyright.png"] {*/
+/*    filter: brightness(0) invert(1); !* Filtr pro bílou barvu *!*/
+/*}*/

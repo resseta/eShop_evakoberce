@@ -21,7 +21,6 @@ logger = logging.getLogger(__name__)
 
 # Create your views here.
 
-
 def home(request):
     products = Product.objects.all()
     cart = None
@@ -276,10 +275,6 @@ def checkout(request):
         'payment_methods': payment_methods,
         'shipping_methods': shipping_methods,
     })
-
-        # order=Order.objects.create(cart=cart,
-        #                            total_amount=cart.total_price()
-        #                            )
 
 
 def success_view(request, order_id):
